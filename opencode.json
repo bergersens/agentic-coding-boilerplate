@@ -1,46 +1,14 @@
 {
   "$schema": "https://opencode.ai/config.json",
   "instructions": ["AGENTS.md"],
-  "skills": {
-    "paths": [".opencode/skills"]
-  },
-  "command": {
-    "grill-me": {
-      "description": "Relentless interview to sharpen a plan or design before implementation.",
-      "template": "Run the `grilling` skill. If the user passed context or an issue reference as $ARGUMENTS, use it as the seed for the interview. Otherwise ask the user what they want to build. Explore the codebase first if needed."
-    },
-    "to-prd": {
-      "description": "Turn the current conversation into a PRD written to ./issues/.",
-      "template": "Load the `to-prd` skill and follow it. Save the PRD as a markdown file in ./issues/ with a slug filename (e.g. `PRD-<slug>.md`). Do NOT interview the user - synthesize from what has already been discussed. Extra context from user: $ARGUMENTS"
-    },
-    "to-issues": {
-      "description": "Break a PRD/plan into vertical-slice issues in ./issues/.",
-      "template": "Load the `to-issues` skill and follow it. Read the PRD from ./issues/ (path may be given as $ARGUMENTS). Write each issue as a separate markdown file to ./issues/ named `NN-<slug>.md` with NN being a zero-padded incrementing number. Include YAML frontmatter with `title`, `status: ready-for-agent`, `blocked_by: []`, and `type: afk` or `type: human-in-the-loop`."
-    },
-    "improve-arch": {
-      "description": "Scan the codebase for module-deepening opportunities and produce an HTML report.",
-      "template": "Run the `improve-codebase-architecture` skill. If $ARGUMENTS specifies a scope, focus on that area."
-    },
-    "diagnose": {
-      "description": "Structured diagnosis loop for hard bugs.",
-      "template": "Run the `diagnosing-bugs` skill. The bug description is: $ARGUMENTS"
-    },
-    "prototype": {
-      "description": "Build a throwaway prototype to answer a design question.",
-      "template": "Run the `prototype` skill. The design question is: $ARGUMENTS"
-    },
-    "handoff": {
-      "description": "Compact the current session into a handoff document for another agent.",
-      "template": "Run the `handoff` skill. Focus for next session: $ARGUMENTS"
-    }
-  },
+  "default_agent": "product",
   "permission": {
     "edit": "allow",
     "bash": {
-      "rm -rf *": "deny",
+      "*": "allow",
       "git push*": "ask",
       "git reset --hard*": "ask",
-      "*": "allow"
+      "rm -rf *": "deny"
     }
   }
 }
