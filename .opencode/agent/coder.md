@@ -1,7 +1,7 @@
 ---
 description: Implements a structured plan test-first (red-green-refactor), one vertical slice at a time. Invoked by the implement orchestrator. Writes production code and the tests that drive it, but the independent tester gate has the final say on green.
 mode: subagent
-model: jambit/claude-sonnet-5
+model: jambit/luna:coder
 permission:
   edit: allow
   bash:

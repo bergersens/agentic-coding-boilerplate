@@ -79,18 +79,23 @@ raw idea ─/idea┼─ SLICE   → one issue → /implement
 Each agent picks a model matched to its job (set in the agent's frontmatter),
 so we don't pay for top-tier reasoning where mechanical work suffices:
 
-Models are chosen from two families only: **Claude** (Anthropic) and
-**GPT-5.6**.
-
 | Tier | Agents | Model |
 |---|---|---|
 | Reasoning / judgment | `product`, `implement`, `reviewer` | `jambit/claude-opus-4-8` |
-| Generation / synthesis | `coder`, `planner`, `prd-writer`, `issue-planner`, `requirements` | `jambit/claude-sonnet-5` |
-| Mechanical (tooling, run loops, verdict) | `tester` | `jambit/gpt-5.6-luna` |
+| Synthesis / structure | `planner`, `prd-writer`, `issue-planner`, `requirements` | `jambit/claude-sonnet-5` |
+| Mechanical / high-volume | `coder`, `tester` | `jambit/luna:coder` (Qwen3.6 35B A3B) |
 
-The pattern: an expensive **critic** (reviewer = Opus) checks a cheaper
-**generator** (coder = Sonnet), with the gates catching mistakes. Want
-"bug-free at any cost"? Bump `coder` to Opus in its frontmatter.
+The pattern: an expensive **critic** (reviewer = Opus) checks a near-free
+**generator** (coder = luna:coder), with the gates catching mistakes. The two
+quality gates plus the 3-round cap absorb the generator's weaker output; if it
+can't reach green+approved in 3 rounds it escalates to the human anyway.
+
+`coder = luna:coder` is a cost experiment — luna:coder is ~10x cheaper than
+Sonnet on output. If the loop needs the full 3 rounds too often (weak output
+burning reviewer runs and escalations), bump `coder` back to
+`jambit/claude-sonnet-5`, or to `jambit/claude-opus-4-8` for "bug-free at any
+cost". `tester` is purely mechanical (detect tooling, run loops, verdict), so
+luna:coder is a safe fit there regardless.
 
 ## Deletion rights
 
