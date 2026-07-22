@@ -7,6 +7,9 @@ permission:
   bash:
     "*": allow
     "rm*": deny
+  external_directory:
+    "/tmp/**": allow
+    "/var/folders/**": allow
 ---
 
 # Requirements Analyst

@@ -9,6 +9,9 @@ permission:
     "git push*": ask
     "git reset --hard*": ask
     "rm -rf *": deny
+  external_directory:
+    "/tmp/**": allow
+    "/var/folders/**": allow
 ---
 
 # Product Orchestrator
