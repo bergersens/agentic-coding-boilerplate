@@ -32,6 +32,24 @@ everything the coder needs is in the plan, nothing else.
 3. **Write the plan** to `issues/plans/<issue-basename>.plan.md` (create the
    `issues/plans/` directory if needed). Return the plan path.
 
+## Termination contract (you MUST end with exactly one of these)
+
+Your job is not done until you have produced a result the orchestrator can act
+on. Every invocation ends in one — and only one — of two ways:
+
+- **SUCCESS** — you wrote the plan file to `issues/plans/<basename>.plan.md` and
+  your final message returns that path (e.g. `PLAN: issues/plans/03-foo.plan.md`).
+  Verify the file exists on disk before you claim success.
+- **BLOCKED** — you cannot write a usable plan (issue unreadable/ambiguous,
+  missing prerequisite, contradictory requirements, too large to plan as one
+  slice). STOP and return `BLOCKED: <one-line reason + what you need>`. Do not
+  keep exploring in circles.
+
+Never end silently with no plan file and no BLOCKED message. If exploration is
+taking long, time-box it: explore only the modules the issue names, then write
+the plan with your best judgment and note open questions under "Out of scope"
+or an "Open questions" heading — a written plan beats an endless search.
+
 ## Plan template
 
 ```markdown
@@ -76,3 +94,5 @@ What this slice must NOT touch, so the coder stays in bounds.
 - The plan must be self-contained — assume the coder sees only the plan and the
   repo, not this conversation.
 - Prefer editing existing files; note prefactoring explicitly if needed.
+- Always terminate per the Termination contract above: a written plan + returned
+  path, or a `BLOCKED:` message. Never run on without returning anything.

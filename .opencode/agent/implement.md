@@ -61,8 +61,19 @@ signal, and your best hypothesis for why it's stuck. Do not thrash past 3.
    Only work an issue whose blockers are all in `issues/done/`.
 2. **Read house rules.** `AGENTS.md` and `CONTEXT.md` (if present). Skim the
    last 5–10 commits.
-3. **Plan.** Delegate to `planner`. It writes the structured plan and returns
-   its path.
+3. **Plan.** Delegate to `planner`. It must end with either `PLAN: <path>` or
+   `BLOCKED: <reason>` (its termination contract).
+   - **`PLAN:`** → verify the file actually exists on disk before continuing. If
+     the path is missing or the file isn't there, treat it as a failed planner
+     run.
+   - **`BLOCKED:`** → do not enter the build loop. Escalate to the human with
+     the planner's reason, or (if it's a fixable gap you can supply) re-invoke
+     the planner once with the missing context.
+   - **Neither / no result / silent run** → the planner failed. Do NOT wait or
+     assume a plan exists. Re-invoke it once with a sharper prompt (point it at
+     the specific issue path and remind it of the termination contract). If the
+     second run also returns nothing usable, escalate to the human. Never
+     proceed to the coder without a verified plan file.
 4. **Build → gate → gate loop** as above, honoring the 3-round cap.
 5. **Commit.** Once both gates pass, commit. The message must state: key
    decisions, files changed, and any blockers/notes for next time.
