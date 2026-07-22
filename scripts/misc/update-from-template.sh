@@ -12,9 +12,9 @@
 # has). Nothing is committed — you review the diff and commit yourself.
 #
 # Usage:
-#   ./scripts/update-from-template.sh            # sync from the default template
-#   ./scripts/update-from-template.sh <git-url>  # sync from a different template
-#   TEMPLATE_REF=some-branch ./scripts/update-from-template.sh
+#   ./scripts/misc/update-from-template.sh            # sync from the default template
+#   ./scripts/misc/update-from-template.sh <git-url>  # sync from a different template
+#   TEMPLATE_REF=some-branch ./scripts/misc/update-from-template.sh
 
 set -eo pipefail
 
@@ -31,7 +31,7 @@ SHARED_PATHS=(
 )
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+REPO_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
 cd "$REPO_ROOT"
 
 if [ -n "$(git status --porcelain)" ]; then
