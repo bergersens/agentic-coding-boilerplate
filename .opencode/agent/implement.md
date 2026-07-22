@@ -6,8 +6,8 @@ permission:
   edit: allow
   bash:
     "*": allow
-    "git push*": ask
-    "git reset --hard*": ask
+    "git push*": deny
+    "git reset --hard*": deny
     "rm -rf *": deny
   external_directory:
     "/tmp/**": allow
@@ -105,6 +105,11 @@ they explicitly ask you to take one.
 - ONE issue per invocation. Don't chain issues — a fresh invocation gets a
   fresh context (this is the structural "context reset").
 - Never modify PRD files.
+- **Commit, but never push.** Committing when both gates pass is expected.
+  Pushing to a remote is not your job and is blocked at the permission layer —
+  do not attempt `git push` (or any remote-mutating git command). The human
+  decides when to push. Likewise never run destructive git commands
+  (`git reset --hard`, force operations).
 - Never write the tests yourself as the orchestrator — that's the tester's job,
   so the gate stays independent from the coder.
 - Prefer editing existing files over creating new ones.

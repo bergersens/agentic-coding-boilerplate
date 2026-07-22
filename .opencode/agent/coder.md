@@ -6,6 +6,8 @@ permission:
   edit: allow
   bash:
     "*": allow
+    "git push*": deny
+    "git reset --hard*": deny
     "rm -rf *": deny
   external_directory:
     "/tmp/**": allow
