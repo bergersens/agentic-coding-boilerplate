@@ -2,7 +2,6 @@
 description: Synthesizes a shared design concept (from a grilling conversation) into a PRD written to prds/<slug>.md as a draft. Does NOT interview — synthesizes what it is given. Invoked by the product orchestrator and the /to-prd command.
 mode: subagent
 model: jambit/claude-sonnet-5
-temperature: 0.2
 permission:
   edit: allow
   bash:

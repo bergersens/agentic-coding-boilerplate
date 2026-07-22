@@ -2,7 +2,6 @@
 description: Reads one ready-to-build issue and writes a structured implementation plan that a coder can execute with zero extra context. Invoked by the implement orchestrator. Plans only — writes no production code.
 mode: subagent
 model: jambit/claude-sonnet-5
-temperature: 0.2
 permission:
   edit: allow
   bash:

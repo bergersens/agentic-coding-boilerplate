@@ -2,7 +2,6 @@
 description: Breaks a PRD into independently-grabbable vertical-slice issues in issues/NN-<slug>.md. Handles project-management concerns — dependency ordering, afk vs human-in-the-loop classification, blocked_by wiring. Invoked by the product orchestrator and the /to-issues command.
 mode: subagent
 model: jambit/claude-sonnet-5
-temperature: 0.2
 permission:
   edit: allow
   bash:
