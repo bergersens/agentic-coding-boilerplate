@@ -5,6 +5,15 @@ short — task-specific knowledge lives in `.opencode/reference/` and is loaded
 on demand; role-specific rules live in each agent's own prompt under
 `.opencode/agent/`.
 
+## Communication
+
+- **Antworte immer auf Deutsch.**
+- Nur das Nötigste: kurz und knapp. Keine Einleitungen, keine Zusammenfassungen,
+  kein Smalltalk, kein "Gerne!" oder "Klar!". Direkt zur Sache.
+- Keine Wiederholung der Frage, keine Ankündigung was du gleich tust — tu es.
+- Erkläre nur, wenn explizit gefragt oder wenn eine Entscheidung eine kurze
+  Begründung braucht. Dann ein Satz, nicht drei.
+
 ## Philosophy
 
 1. **Alignment before code.** Don't build until you share a design concept with
