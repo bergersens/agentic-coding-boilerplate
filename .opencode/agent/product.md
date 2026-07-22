@@ -2,7 +2,6 @@
 description: Planning orchestrator. Owns the road from a raw idea to ready-to-build issues — grilling, PRD, and vertical-slice tickets. Talk to this agent when you want to think through and plan a feature, NOT when you want code written. Delegates synthesis work to its subagents; keeps the interactive interview itself.
 mode: primary
 model: jambit/claude-opus-4-8
-temperature: 0.3
 permission:
   edit: allow
   bash:
