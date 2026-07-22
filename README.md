@@ -95,8 +95,9 @@ off; every step gives the downstream agent unambiguous instructions.
 ├── issues/                  # work tickets + shared agent memory
 │   ├── plans/               # structured implementation plans (planner output)
 │   └── done/                # completed issues
-├── scripts/adw/
-│   └── run.sh               # the ADW loop: deterministic code over the implement agent
+├── scripts/
+│   ├── adw/run.sh               # the ADW loop: deterministic code over the implement agent
+│   └── update-from-template.sh  # pull shared agent-layer updates from the template
 └── .opencode/
     ├── agent/               # the two orchestrators + their subagents
     │   ├── product.md  requirements.md  prd-writer.md  issue-planner.md
@@ -140,6 +141,29 @@ It only touches `type: afk` issues whose `blocked_by` is fully resolved;
    `/grill <your idea>`.
 3. Restart opencode after editing any agent, command, or config file — config is
    loaded once at startup.
+
+## Keeping projects up to date with the template
+
+GitHub template repos are **not** linked like forks, so template improvements
+have to be pulled in on purpose. A project created from this template can sync
+its shared agent layer at any time:
+
+```
+./scripts/update-from-template.sh
+```
+
+This adds the boilerplate as a git remote called `template`, fetches it, and
+**overwrites only the shared paths** — `.opencode/agent`, `.opencode/command`,
+`.opencode/reference`, and `scripts/adw`. Everything project-specific
+(`AGENTS.md`, `opencode.json`, `issues/`, `prds/`, and any skills, agents, or
+commands you added yourself) is left untouched. It never commits — you review
+the diff and commit yourself.
+
+- Runs only when you invoke it (manual, never automatic).
+- Requires a clean working tree so the template's changes are easy to review.
+- Edit the `SHARED_PATHS` list in the script to change what gets synced (e.g.
+  add `AGENTS.md` if you want house rules pulled in too).
+- Point it at a different template with `./scripts/update-from-template.sh <url>`.
 
 ## Extending it
 
