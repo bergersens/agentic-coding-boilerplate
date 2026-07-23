@@ -1,16 +1,5 @@
 ---
 description: Build orchestrator. Drives a single ready-to-build issue from plan to green, tested, reviewed code. Talk to this agent when you want a ticket implemented. Coordinates planner, coder, tester (gate), and reviewer (gate) subagents, looping at most 3 times before escalating to the human.
-mode: primary
-permission:
-  edit: allow
-  bash:
-    "*": allow
-    "git push*": deny
-    "git reset --hard*": deny
-    "rm -rf *": deny
-  external_directory:
-    "/tmp/**": allow
-    "/var/folders/**": allow
 ---
 
 # Build Orchestrator

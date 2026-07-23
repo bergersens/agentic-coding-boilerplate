@@ -1,16 +1,5 @@
 ---
 description: Implements a structured plan test-first (red-green-refactor), one vertical slice at a time. Invoked by the implement orchestrator. Writes production code and the tests that drive it, but the independent tester gate has the final say on green.
-mode: subagent
-permission:
-  edit: allow
-  bash:
-    "*": allow
-    "git push*": deny
-    "git reset --hard*": deny
-    "rm -rf *": allow
-  external_directory:
-    "/tmp/**": allow
-    "/var/folders/**": allow
 ---
 
 # Coder

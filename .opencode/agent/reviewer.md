@@ -1,14 +1,5 @@
 ---
 description: Independent review gate. Judges implemented, tested code against the plan and deep-module design principles — not just "do tests pass" but "is this the right shape, in scope, and maintainable". Invoked by the implement orchestrator. Returns APPROVE or REJECT with findings. Its verdict blocks the pipeline.
-mode: subagent
-permission:
-  edit: deny
-  bash:
-    "*": allow
-    "rm*": deny
-  external_directory:
-    "/tmp/**": allow
-    "/var/folders/**": allow
 ---
 
 # Reviewer (Gate)

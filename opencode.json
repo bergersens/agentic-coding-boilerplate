@@ -3,15 +3,155 @@
   "instructions": ["AGENTS.md"],
   "default_agent": "product",
   "agent": {
-    "implement": { "model": "jambit/claude-opus-4-8" },
-    "product": { "model": "jambit/claude-opus-4-8" },
-    "reviewer": { "model": "jambit/claude-opus-4-8" },
-    "issue-planner": { "model": "jambit/gpt-5.6-terra" },
-    "planner": { "model": "jambit/gpt-5.6-terra" },
-    "prd-writer": { "model": "jambit/gpt-5.6-terra" },
-    "requirements": { "model": "jambit/gpt-5.6-terra" },
-    "coder": { "model": "jambit/luna:coder" },
-    "tester": { "model": "jambit/luna:coder" }
+    "product": {
+      "model": "jambit/claude-opus-4-8",
+      "mode": "primary",
+      "permission": {
+        "edit": "allow",
+        "bash": {
+          "*": "allow",
+          "git push*": "ask",
+          "git reset --hard*": "ask",
+          "rm -rf *": "deny"
+        },
+        "external_directory": {
+          "/tmp/**": "allow",
+          "/var/folders/**": "allow"
+        }
+      }
+    },
+    "implement": {
+      "model": "jambit/claude-opus-4-8",
+      "mode": "primary",
+      "permission": {
+        "edit": "allow",
+        "bash": {
+          "*": "allow",
+          "git push*": "deny",
+          "git reset --hard*": "deny",
+          "rm -rf *": "deny"
+        },
+        "external_directory": {
+          "/tmp/**": "allow",
+          "/var/folders/**": "allow"
+        }
+      }
+    },
+    "reviewer": {
+      "model": "jambit/claude-opus-4-8",
+      "mode": "subagent",
+      "permission": {
+        "edit": "deny",
+        "bash": {
+          "*": "allow",
+          "rm*": "deny"
+        },
+        "external_directory": {
+          "/tmp/**": "allow",
+          "/var/folders/**": "allow"
+        }
+      }
+    },
+    "requirements": {
+      "model": "jambit/gpt-5.6-luna",
+      "mode": "subagent",
+      "permission": {
+        "edit": "deny",
+        "bash": {
+          "*": "allow",
+          "rm*": "deny"
+        },
+        "external_directory": {
+          "/tmp/**": "allow",
+          "/var/folders/**": "allow"
+        }
+      }
+    },
+    "planner": {
+      "model": "jambit/gpt-5.6-luna",
+      "mode": "subagent",
+      "permission": {
+        "edit": "allow",
+        "bash": {
+          "*": "allow",
+          "git push*": "deny",
+          "git reset --hard*": "deny",
+          "rm -rf *": "deny"
+        },
+        "external_directory": {
+          "/tmp/**": "allow",
+          "/var/folders/**": "allow"
+        }
+      }
+    },
+    "prd-writer": {
+      "model": "jambit/gpt-5.6-luna",
+      "mode": "subagent",
+      "permission": {
+        "edit": "allow",
+        "bash": {
+          "*": "allow",
+          "git push*": "deny",
+          "git reset --hard*": "deny",
+          "rm -rf *": "deny"
+        },
+        "external_directory": {
+          "/tmp/**": "allow",
+          "/var/folders/**": "allow"
+        }
+      }
+    },
+    "issue-planner": {
+      "model": "jambit/gpt-5.6-luna",
+      "mode": "subagent",
+      "permission": {
+        "edit": "allow",
+        "bash": {
+          "*": "allow",
+          "git push*": "deny",
+          "git reset --hard*": "deny",
+          "rm -rf *": "deny"
+        },
+        "external_directory": {
+          "/tmp/**": "allow",
+          "/var/folders/**": "allow"
+        }
+      }
+    },
+    "coder": {
+      "model": "jambit/gpt-5.6-terra",
+      "mode": "subagent",
+      "permission": {
+        "edit": "allow",
+        "bash": {
+          "*": "allow",
+          "git push*": "deny",
+          "git reset --hard*": "deny",
+          "rm -rf *": "allow"
+        },
+        "external_directory": {
+          "/tmp/**": "allow",
+          "/var/folders/**": "allow"
+        }
+      }
+    },
+    "tester": {
+      "model": "jambit/luna:coder",
+      "mode": "subagent",
+      "permission": {
+        "edit": "allow",
+        "bash": {
+          "*": "allow",
+          "git push*": "deny",
+          "git reset --hard*": "deny",
+          "rm -rf *": "deny"
+        },
+        "external_directory": {
+          "/tmp/**": "allow",
+          "/var/folders/**": "allow"
+        }
+      }
+    }
   },
   "permission": {
     "edit": "allow",

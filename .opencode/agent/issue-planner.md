@@ -1,16 +1,5 @@
 ---
 description: Breaks a PRD into independently-grabbable vertical-slice issues in docs/issues/NN-<slug>.md. Handles project-management concerns — dependency ordering, afk vs human-in-the-loop classification, blocked_by wiring. Invoked by the product orchestrator and the /to-issues command.
-mode: subagent
-permission:
-  edit: allow
-  bash:
-    "*": allow
-    "git push*": deny
-    "git reset --hard*": deny
-    "rm -rf *": deny
-  external_directory:
-    "/tmp/**": allow
-    "/var/folders/**": allow
 ---
 
 # Issue Planner

@@ -5,6 +5,7 @@
   "description": "",
   "scripts": {
     "adw": "bash scripts/adw/run.sh",
-    "update-from-template": "bash scripts/misc/update-from-template.sh"
+    "update-from-template": "bash scripts/misc/update-from-template.sh",
+    "push-to-template": "bash scripts/misc/push-to-template.sh"
   }
 }

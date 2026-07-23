@@ -26,6 +26,14 @@ most recent work in this session.
 
 ## Propose (do NOT apply yet)
 
+**Classify each proposal first** — this repo is a template that gets cloned:
+
+- **project-specific** — knowledge true only for this codebase (e.g. this
+  project's auth flow, a client convention). Stays in the clone. Never goes up.
+- **generic** — a workflow improvement any clone benefits from (a better gate, a
+  new command, a rule that always applies). Candidate to contribute back up to
+  the template.
+
 Map each finding to exactly one target and keep the change minimal:
 
 - **Global rule** (`AGENTS.md`) — only if it applies no matter what's being
@@ -43,5 +51,19 @@ doc, note where its path gets wired in (global rules or the relevant command).
 Then **stop and wait for my approval.** I approve per proposal — apply only what
 I greenlight, then confirm the changed paths. Don't bundle unrelated changes,
 and don't lower the bar on keeping `AGENTS.md` lean.
+
+## Contribute generic changes back to the template
+
+After I've approved and you've committed a **generic** change that lives in the
+shared agent layer (`.opencode/agent`, `.opencode/command`, `.opencode/reference`,
+`scripts/adw`), offer to send it upstream:
+
+```
+npm run push-to-template -- <file> [file...]
+```
+
+That prepares a branch on the template and prints the push + PR command — it
+never pushes on its own. Only pass files I approved as generic; project-specific
+changes stay here. If nothing generic was approved, skip this.
 
 What to evolve from: $ARGUMENTS

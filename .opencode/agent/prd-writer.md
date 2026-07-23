@@ -1,16 +1,5 @@
 ---
 description: Synthesizes a shared design concept (from a grilling conversation) into a PRD written to docs/prds/<slug>.md as a draft. Does NOT interview — synthesizes what it is given. Invoked by the product orchestrator and the /to-prd command.
-mode: subagent
-permission:
-  edit: allow
-  bash:
-    "*": allow
-    "git push*": deny
-    "git reset --hard*": deny
-    "rm -rf *": deny
-  external_directory:
-    "/tmp/**": allow
-    "/var/folders/**": allow
 ---
 
 # PRD Writer

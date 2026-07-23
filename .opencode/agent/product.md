@@ -1,16 +1,5 @@
 ---
 description: Planning orchestrator. Owns the road from a raw idea to ready-to-build issues — grilling, PRD, and vertical-slice tickets. Talk to this agent when you want to think through and plan a feature, NOT when you want code written. Delegates synthesis work to its subagents; keeps the interactive interview itself.
-mode: primary
-permission:
-  edit: allow
-  bash:
-    "*": allow
-    "git push*": ask
-    "git reset --hard*": ask
-    "rm -rf *": deny
-  external_directory:
-    "/tmp/**": allow
-    "/var/folders/**": allow
 ---
 
 # Product Orchestrator

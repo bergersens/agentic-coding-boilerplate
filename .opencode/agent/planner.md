@@ -1,16 +1,5 @@
 ---
 description: Reads one ready-to-build issue and writes a structured implementation plan that a coder can execute with zero extra context. Invoked by the implement orchestrator. Plans only — writes no production code.
-mode: subagent
-permission:
-  edit: allow
-  bash:
-    "*": allow
-    "git push*": deny
-    "git reset --hard*": deny
-    "rm -rf *": deny
-  external_directory:
-    "/tmp/**": allow
-    "/var/folders/**": allow
 ---
 
 # Planner

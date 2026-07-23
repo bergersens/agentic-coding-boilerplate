@@ -76,26 +76,31 @@ raw idea ─/idea┼─ FEATURE → issue(s) → /implement
 
 ## Model tiering
 
-Each agent picks a model matched to its job (set in the agent's frontmatter),
-so we don't pay for top-tier reasoning where mechanical work suffices:
+Each agent picks a model matched to its job (model, `mode`, and `permission`
+all live in `opencode.json`; the agent `.md` files hold only the description and
+prompt), so we don't pay for top-tier reasoning where mechanical work suffices:
 
 | Tier | Agents | Model |
 |---|---|---|
 | Reasoning / judgment | `product`, `implement`, `reviewer` | `jambit/claude-opus-4-8` |
-| Synthesis / structure | `planner`, `prd-writer`, `issue-planner`, `requirements` | `jambit/gpt-5.6-terra` |
-| Mechanical / high-volume | `coder`, `tester` | `jambit/luna:coder` (Qwen3.6 35B A3B) |
+| Synthesis / structure | `planner`, `prd-writer`, `issue-planner`, `requirements` | `jambit/gpt-5.6-luna` |
+| Code generation | `coder` | `jambit/gpt-5.6-terra` |
+| Mechanical / high-volume | `tester` | `jambit/luna:coder` (Qwen3.6 35B A3B) |
 
-The pattern: an expensive **critic** (reviewer = Opus) checks a near-free
-**generator** (coder = luna:coder), with the gates catching mistakes. The two
-quality gates plus the 3-round cap absorb the generator's weaker output; if it
-can't reach green+approved in 3 rounds it escalates to the human anyway.
+The pattern: an expensive **critic** (reviewer = Opus) checks a cheaper
+**generator** (coder = Terra), with the gates catching mistakes. The two quality
+gates plus the 3-round cap absorb the generator's weaker output; if it can't
+reach green+approved in 3 rounds it escalates to the human anyway.
 
-`coder = luna:coder` is a cost experiment — luna:coder is ~10x cheaper than
-Terra on output. If the loop needs the full 3 rounds too often (weak output
-burning reviewer runs and escalations), bump `coder` back to
-`jambit/gpt-5.6-terra`, or to `jambit/claude-opus-4-8` for "bug-free at any
-cost". `tester` is purely mechanical (detect tooling, run loops, verdict), so
-luna:coder is a safe fit there regardless.
+`coder = gpt-5.6-terra` because reliability drives loop cost: a coder that
+stalls or times out blocks the whole loop, and Anthropic models (Sonnet) showed
+timeout trouble here while the OpenAI stack ran clean. Terra is the reliable
+sweet spot — stronger than the internal Qwen `luna:coder` (which was weak/slow),
+without Opus prices. If the loop rarely needs a second round, drop `coder` to
+`jambit/gpt-5.6-luna` to save; if it can't reach green+approved reliably, bump
+to `jambit/claude-opus-4-8` for "bug-free at any cost". Measure round counts
+with `ADW_DEBUG=1` before moving it. `tester` is purely mechanical (detect
+tooling, run loops, verdict), so `luna:coder` is a safe, cheap fit there.
 
 ## Deletion rights
 
