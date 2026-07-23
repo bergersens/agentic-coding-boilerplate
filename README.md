@@ -130,6 +130,8 @@ build loop. The script stops early when the agent emits
 ```
 ./scripts/adw/run.sh        # one iteration — watch it, tune the prompts
 ./scripts/adw/run.sh 20     # up to 20 iterations, unattended
+npm run adw                 # same, via npm
+npm run adw -- 20           # pass args after --
 ```
 
 It only touches `type: afk` issues whose `blocked_by` is fully resolved;
@@ -151,6 +153,7 @@ its shared agent layer at any time:
 
 ```
 ./scripts/misc/update-from-template.sh
+npm run update-from-template            # same, via npm
 ```
 
 This adds the boilerplate as a git remote called `template`, fetches it, and
@@ -164,7 +167,8 @@ the diff and commit yourself.
 - Requires a clean working tree so the template's changes are easy to review.
 - Edit the `SHARED_PATHS` list in the script to change what gets synced (e.g.
   add `AGENTS.md` if you want house rules pulled in too).
-- Point it at a different template with `./scripts/misc/update-from-template.sh <url>`.
+- Point it at a different template with `./scripts/misc/update-from-template.sh <url>`
+  (or `npm run update-from-template -- <url>`).
 
 ## Extending it
 

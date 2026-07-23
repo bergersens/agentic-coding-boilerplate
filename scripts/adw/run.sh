@@ -11,6 +11,8 @@
 # Usage:
 #   ./scripts/adw/run.sh            # one iteration (watch it, human-in-the-loop)
 #   ./scripts/adw/run.sh 20         # up to 20 iterations, unattended (AFK)
+#   npm run adw                     # same, via npm
+#   npm run adw -- 20               # pass args after --
 #
 # Stops early when the agent emits <promise>NO MORE TASKS</promise> (all eligible
 # AFK issues done or blocked by human-in-the-loop issues).

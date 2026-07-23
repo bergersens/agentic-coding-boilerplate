@@ -3,5 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "description": "",
-  "scripts": {}
+  "scripts": {
+    "adw": "bash scripts/adw/run.sh",
+    "update-from-template": "bash scripts/misc/update-from-template.sh"
+  }
 }

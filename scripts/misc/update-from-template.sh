@@ -15,6 +15,8 @@
 #   ./scripts/misc/update-from-template.sh            # sync from the default template
 #   ./scripts/misc/update-from-template.sh <git-url>  # sync from a different template
 #   TEMPLATE_REF=some-branch ./scripts/misc/update-from-template.sh
+#   npm run update-from-template                      # same, via npm
+#   npm run update-from-template -- <git-url>         # pass args after --
 
 set -eo pipefail
 
