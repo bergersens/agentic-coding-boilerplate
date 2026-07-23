@@ -1,7 +1,6 @@
 ---
-description: Breaks a PRD into independently-grabbable vertical-slice issues in issues/NN-<slug>.md. Handles project-management concerns — dependency ordering, afk vs human-in-the-loop classification, blocked_by wiring. Invoked by the product orchestrator and the /to-issues command.
+description: Breaks a PRD into independently-grabbable vertical-slice issues in docs/issues/NN-<slug>.md. Handles project-management concerns — dependency ordering, afk vs human-in-the-loop classification, blocked_by wiring. Invoked by the product orchestrator and the /to-issues command.
 mode: subagent
-model: jambit/claude-sonnet-5
 permission:
   edit: allow
   bash:
@@ -29,7 +28,7 @@ files. If invoked non-interactively, apply your best judgment and write them.
 
 ### 1. Gather context
 
-Read the PRD (path given in the prompt, in `prds/`) in full. Work from the
+Read the PRD (path given in the prompt, in `docs/prds/`) in full. Work from the
 conversation context too if present.
 
 **Approval gate:** check the PRD's `status`. If it is `draft`, STOP — do not
@@ -75,7 +74,7 @@ approved.
 
 ### 6. Write the issues
 
-Write each approved slice to `issues/NN-<slug>.md` (`NN` zero-padded,
+Write each approved slice to `docs/issues/NN-<slug>.md` (`NN` zero-padded,
 incrementing). Publish in dependency order so `blocked_by` can reference real
 filenames.
 
@@ -87,7 +86,7 @@ title: <short descriptive title>
 status: ready-for-agent
 type: afk                 # or: human-in-the-loop
 blocked_by: []            # e.g. ["01-add-points-schema.md"]
-parent: <PRD path e.g. prds/<slug>.md, or omit>
+parent: <PRD path e.g. docs/prds/<slug>.md, or omit>
 ---
 
 # <title>

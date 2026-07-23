@@ -1,7 +1,6 @@
 ---
 description: Reads one ready-to-build issue and writes a structured implementation plan that a coder can execute with zero extra context. Invoked by the implement orchestrator. Plans only — writes no production code.
 mode: subagent
-model: jambit/claude-sonnet-5
 permission:
   edit: allow
   bash:
@@ -29,16 +28,16 @@ everything the coder needs is in the plan, nothing else.
    work lands and the public interface(s) that change. Use
    `.opencode/reference/code-design.md` for vocabulary and deep-module
    judgment.
-3. **Write the plan** to `issues/plans/<issue-basename>.plan.md` (create the
-   `issues/plans/` directory if needed). Return the plan path.
+3. **Write the plan** to `docs/plans/<issue-basename>.plan.md` (create the
+   `docs/plans/` directory if needed). Return the plan path.
 
 ## Termination contract (you MUST end with exactly one of these)
 
 Your job is not done until you have produced a result the orchestrator can act
 on. Every invocation ends in one — and only one — of two ways:
 
-- **SUCCESS** — you wrote the plan file to `issues/plans/<basename>.plan.md` and
-  your final message returns that path (e.g. `PLAN: issues/plans/03-foo.plan.md`).
+- **SUCCESS** — you wrote the plan file to `docs/plans/<basename>.plan.md` and
+  your final message returns that path (e.g. `PLAN: docs/plans/03-foo.plan.md`).
   Verify the file exists on disk before you claim success.
 - **BLOCKED** — you cannot write a usable plan (issue unreadable/ambiguous,
   missing prerequisite, contradictory requirements, too large to plan as one
@@ -55,7 +54,7 @@ or an "Open questions" heading — a written plan beats an endless search.
 ```markdown
 # Plan: <issue title>
 
-Source issue: `issues/NN-<slug>.md`
+Source issue: `docs/issues/NN-<slug>.md`
 
 ## Goal
 

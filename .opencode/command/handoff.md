@@ -31,8 +31,8 @@ One paragraph: what was being worked on, what's blocking, the immediate next ste
 - Question
 
 ## References
-- `issues/NN-<slug>.md` — active issue
-- `prds/<slug>.md` — parent PRD
+- `docs/issues/NN-<slug>.md` — active issue
+- `docs/prds/<slug>.md` — parent PRD
 - commit `abc1234` — last known-good state
 
 ## Suggested next steps

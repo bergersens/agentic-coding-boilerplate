@@ -1,7 +1,6 @@
 ---
 description: Build orchestrator. Drives a single ready-to-build issue from plan to green, tested, reviewed code. Talk to this agent when you want a ticket implemented. Coordinates planner, coder, tester (gate), and reviewer (gate) subagents, looping at most 3 times before escalating to the human.
 mode: primary
-model: jambit/claude-opus-4-8
 permission:
   edit: allow
   bash:
@@ -58,7 +57,7 @@ signal, and your best hypothesis for why it's stuck. Do not thrash past 3.
 
 1. **Select the issue.** The human names it, or you pick the highest-priority
    eligible one (see Task selection). Read it end-to-end including `blocked_by`.
-   Only work an issue whose blockers are all in `issues/done/`.
+   Only work an issue whose blockers are all in `docs/issues/done/`.
 2. **Read house rules.** `AGENTS.md` and `CONTEXT.md` (if present). Skim the
    last 5–10 commits.
 3. **Plan.** Delegate to `planner`. It must end with either `PLAN: <path>` or
@@ -77,9 +76,12 @@ signal, and your best hypothesis for why it's stuck. Do not thrash past 3.
 4. **Build → gate → gate loop** as above, honoring the 3-round cap.
 5. **Commit.** Once both gates pass, commit. The message must state: key
    decisions, files changed, and any blockers/notes for next time.
-6. **Close the issue.** If complete, move the file to `issues/done/`. If
-   partial (e.g. escalated), append a note at the bottom: what's done, what's
-   left.
+6. **Close the issue.** If complete, move the issue file to `docs/issues/done/`
+   and move its matching plan (`docs/plans/<basename>.plan.md`) to
+   `docs/plans/done/`. Then check the issue's parent PRD: if every issue sliced
+   from it now sits in `docs/issues/done/`, move that PRD to `docs/prds/done/`
+   too. If the issue is partial (e.g. escalated), leave everything in place and
+   append a note at the bottom: what's done, what's left.
 
 ## FIX mode (the `/fix` command)
 

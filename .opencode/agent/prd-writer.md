@@ -1,7 +1,6 @@
 ---
-description: Synthesizes a shared design concept (from a grilling conversation) into a PRD written to prds/<slug>.md as a draft. Does NOT interview — synthesizes what it is given. Invoked by the product orchestrator and the /to-prd command.
+description: Synthesizes a shared design concept (from a grilling conversation) into a PRD written to docs/prds/<slug>.md as a draft. Does NOT interview — synthesizes what it is given. Invoked by the product orchestrator and the /to-prd command.
 mode: subagent
-model: jambit/claude-sonnet-5
 permission:
   edit: allow
   bash:
@@ -35,8 +34,8 @@ single result, so do the whole job in one pass.
    resolve it. (Design vocabulary: `.opencode/reference/code-design.md`.)
 
 3. **Write the PRD** using the template below and save it to
-   `prds/<slug>.md` where `<slug>` is a short kebab-case feature id. Create the
-   `prds/` directory if it doesn't exist. A freshly written PRD is always
+   `docs/prds/<slug>.md` where `<slug>` is a short kebab-case feature id. Create the
+   `docs/prds/` directory if it doesn't exist. A freshly written PRD is always
    `status: draft` — a raw idea, not yet signed off.
 
 4. **Return** the PRD path and a one-line summary. Tell the human it's a draft:

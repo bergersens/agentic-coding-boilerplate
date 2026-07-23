@@ -1,7 +1,6 @@
 ---
 description: Independent review gate. Judges implemented, tested code against the plan and deep-module design principles — not just "do tests pass" but "is this the right shape, in scope, and maintainable". Invoked by the implement orchestrator. Returns APPROVE or REJECT with findings. Its verdict blocks the pipeline.
 mode: subagent
-model: jambit/claude-opus-4-8
 permission:
   edit: deny
   bash:

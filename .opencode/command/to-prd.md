@@ -1,12 +1,12 @@
 ---
-description: Synthesize the current conversation into a draft PRD in prds/<slug>.md.
+description: Synthesize the current conversation into a draft PRD in docs/prds/<slug>.md.
 agent: product
 ---
 
 Delegate to the `prd-writer` subagent via the Task tool. Give it the full
 design concept from this conversation plus any extra context below. Do NOT
 interview me — synthesize what we've already discussed. It writes the PRD to
-`prds/<slug>.md` with `status: draft`. When it returns, confirm the path and
+`docs/prds/<slug>.md` with `status: draft`. When it returns, confirm the path and
 remind me it's a draft: I review it, and once I approve it you'll flip it to
 `status: approved` — only then can `/to-issues` slice it.
 

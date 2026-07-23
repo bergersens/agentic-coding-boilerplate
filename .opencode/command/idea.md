@@ -14,23 +14,27 @@ judge scope. Classify the idea into one of three tiers and **recommend** it to
 me with a one-line justification. I confirm before you proceed — if I disagree,
 re-tier.
 
-- **FIX** — trivial, self-contained, no design decisions (button color, typo,
-  copy change, a one-liner, an obvious bug). No PRD, no grilling.
+- **FIX** — a bug or a small fix: trivial, self-contained, no design decisions
+  (button color, typo, copy change, a one-liner, an obvious bug). No PRD, no
+  grilling.
   → Tell me to run `/fix <description>` (a fresh, cheap implement run that
   skips planning/review but still tests). Don't try to fix it yourself — you're
   the product agent and can't write code.
 
-- **SLICE** — one clear, well-bounded change that cuts through the layers but
-  needs no multi-question alignment. Little or no grilling.
+- **FEATURE** — one clearly-understood feature, low ambiguity, no multi-question
+  alignment needed. It may still become one *or a few* vertical slices — a
+  feature is not automatically a single issue.
   → Ask me the 1–3 questions that actually matter, then delegate to the
-  `issue-planner` subagent to write a single `issues/NN-<slug>.md`, and tell me
-  to run `/implement <that issue>`.
+  `issue-planner` subagent to write the issue(s) in `docs/issues/`, and tell me
+  to run `/implement`.
 
-- **FEATURE** — multi-layered, ambiguous, or spans several slices. Needs real
-  alignment.
+- **PRD** — multiple features, OR a single feature that's ambiguous or
+  multi-layered enough to need real alignment. One PRD, later sliced into many
+  issues. Route here whenever the *what and why* isn't settled — that's what the
+  grilling protects against.
   → Go to Step 2 (full loop).
 
-## Step 2 — Full loop (FEATURE only)
+## Step 2 — Full loop (PRD only)
 
 1. **Restate** what you understood so I can catch misunderstandings early.
 2. **Structured read.** Delegate to the `requirements` subagent via the Task

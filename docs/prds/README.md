@@ -1,17 +1,21 @@
-# prds/
+# docs/prds/
 
 Product Requirement Documents — the long-lived decision documents that the
-`product` orchestrator produces and the `issue-planner` slices into `issues/`.
+`product` orchestrator produces and the `issue-planner` slices into `docs/issues/`.
 
-PRDs are kept separate from `issues/` on purpose: a PRD is a durable record of
+PRDs are kept separate from `docs/issues/` on purpose: a PRD is a durable record of
 *what and why*, while an issue is a short-lived unit of *work*.
 
 ## Layout
 
 ```
-prds/
-  <slug>.md             one PRD per feature, written by prd-writer / /to-prd
+docs/prds/
+  <slug>.md             one PRD per feature set, written by prd-writer / /to-prd
+  done/                 PRDs whose issues have all shipped
 ```
+
+A PRD moves into `done/` once every issue it was sliced into sits in
+`docs/issues/done/`.
 
 ## Lifecycle
 

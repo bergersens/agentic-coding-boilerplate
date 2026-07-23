@@ -2,6 +2,17 @@
   "$schema": "https://opencode.ai/config.json",
   "instructions": ["AGENTS.md"],
   "default_agent": "product",
+  "agent": {
+    "implement": { "model": "jambit/claude-opus-4-8" },
+    "product": { "model": "jambit/claude-opus-4-8" },
+    "reviewer": { "model": "jambit/claude-opus-4-8" },
+    "issue-planner": { "model": "jambit/claude-sonnet-5" },
+    "planner": { "model": "jambit/claude-sonnet-5" },
+    "prd-writer": { "model": "jambit/claude-sonnet-5" },
+    "requirements": { "model": "jambit/claude-sonnet-5" },
+    "coder": { "model": "jambit/luna:coder" },
+    "tester": { "model": "jambit/luna:coder" }
+  },
   "permission": {
     "edit": "allow",
     "bash": {

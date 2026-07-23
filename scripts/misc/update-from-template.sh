@@ -4,7 +4,7 @@
 # GitHub "template" repos are NOT linked like forks, so updates have to be
 # pulled in explicitly. This script adds the boilerplate as a git remote called
 # `template`, fetches it, and overwrites ONLY the shared agent-layer paths —
-# leaving everything project-specific (AGENTS.md, opencode.json, issues/, prds/,
+# leaving everything project-specific (AGENTS.md, opencode.json, docs/issues/, docs/prds/,
 # your own skills/agents/commands) untouched.
 #
 # It overwrites files that exist in the template. Files you added inside the

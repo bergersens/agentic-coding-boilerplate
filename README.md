@@ -15,7 +15,7 @@ only ships the coding-workflow scaffolding.
 ## The core idea: two orchestrators, two teams
 
 Agents don't share a conversation. Each runs in an **isolated context** and
-coordinates through **artifacts** — the files in `issues/`, PRDs, plans, and git
+coordinates through **artifacts** — the files in `docs/issues/`, PRDs, plans, and git
 commits. This is context isolation by construction (the structural version of
 the "context reset" trick) and it's what lets long, autonomous runs stay
 coherent.
@@ -40,12 +40,12 @@ structure, not hope.
 `/idea` triages every idea into one of three tiers, so small work stays small:
 
 ```
-              ┌─ FIX     → /fix            trivial change, tested, no loop
-/idea <dump> ─┼─ SLICE   → one issue     → /implement
-              └─ FEATURE → grill → PRD → issues → /implement
+              ┌─ FIX     → /fix            a bug or a small fix, tested, no loop
+/idea <dump> ─┼─ FEATURE → issue(s)      → /implement
+              └─ PRD     → grill → PRD → issues → /implement
 ```
 
-The full FEATURE path:
+The full PRD path:
 
 ```
 IDEA
@@ -55,7 +55,7 @@ IDEA
   │                product interviews you (20–100 questions) → shared design concept
   ▼
 PRD
-  │  /to-prd       prd-writer synthesizes the conversation → prds/<slug>.md (draft)
+  │  /to-prd       prd-writer synthesizes the conversation → docs/prds/<slug>.md (draft)
   │  approve       you sign off the draft → status: approved
   ▼
 ISSUES
@@ -75,11 +75,11 @@ off; every step gives the downstream agent unambiguous instructions.
 
 | Command | Agent | What it does |
 |---|---|---|
-| `/idea <dump>` | product | Dump a raw idea; it's triaged into FIX / SLICE / FEATURE and routed. |
+| `/idea <dump>` | product | Dump a raw idea; it's triaged into FIX / FEATURE / PRD and routed. |
 | `/fix <desc>` | implement | Fast lane for a trivial change — skips planning/review, still tested. |
 | `/grill <topic>` | product | Interviews you until the design concept is aligned. |
-| `/to-prd` | product | Turns the conversation into a draft `prds/<slug>.md`. |
-| `/to-issues` | product | Breaks a PRD into `issues/NN-<slug>.md` vertical slices. |
+| `/to-prd` | product | Turns the conversation into a draft `docs/prds/<slug>.md`. |
+| `/to-issues` | product | Breaks a PRD into `docs/issues/NN-<slug>.md` vertical slices. |
 | `/implement <issue>` | implement | Builds one issue through planner→coder→tester→reviewer. |
 | `/diagnose <bug>` | implement | 6-phase structured bug diagnosis (feedback loop first). |
 | `/handoff` | build | Compacts the session into a handoff doc for a fresh agent. |
@@ -91,10 +91,11 @@ off; every step gives the downstream agent unambiguous instructions.
 ├── opencode.json            # config: default agent + permissions
 ├── AGENTS.md                # slim, always-true house rules (loaded every session)
 ├── package.json             # empty scaffold — add your stack
-├── prds/                    # PRD documents (draft → approved lifecycle)
-├── issues/                  # work tickets + shared agent memory
-│   ├── plans/               # structured implementation plans (planner output)
-│   └── done/                # completed issues
+├── docs/                    # planning artifacts
+│   ├── prds/                # PRD documents (draft → approved lifecycle)
+│   ├── issues/              # work tickets + shared agent memory
+│   │   └── done/            # completed issues
+│   └── plans/               # structured implementation plans (planner output)
 ├── scripts/
 │   ├── adw/run.sh                    # the ADW loop: deterministic code over the implement agent
 │   └── misc/update-from-template.sh  # pull shared agent-layer updates from the template
@@ -155,7 +156,7 @@ its shared agent layer at any time:
 This adds the boilerplate as a git remote called `template`, fetches it, and
 **overwrites only the shared paths** — `.opencode/agent`, `.opencode/command`,
 `.opencode/reference`, and `scripts/adw`. Everything project-specific
-(`AGENTS.md`, `opencode.json`, `issues/`, `prds/`, and any skills, agents, or
+(`AGENTS.md`, `opencode.json`, `docs/issues/`, `docs/prds/`, and any skills, agents, or
 commands you added yourself) is left untouched. It never commits — you review
 the diff and commit yourself.
 

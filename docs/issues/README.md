@@ -1,19 +1,25 @@
-# issues/
+# docs/issues/
 
 Work tickets — the shared memory of the build half of the agent architecture.
 Agents run in isolated contexts and coordinate through these files, not through
-a shared conversation. Long-lived PRD documents live separately in `prds/`.
+a shared conversation. Long-lived PRD documents live separately in `docs/prds/`.
 
 ## Layout
 
 ```
-issues/
+docs/issues/
   01-<slug>.md          Vertical-slice issues (written by issue-planner / /to-issues)
   02-<slug>.md
   ...
-  plans/                Structured implementation plans (written by the planner agent)
   done/                 Completed issues (the implement orchestrator moves them here)
 ```
+
+Each of `docs/prds/`, `docs/issues/`, and `docs/plans/` has its own `done/`
+folder; the `implement` orchestrator moves an artifact there once it has
+shipped.
+
+Structured implementation plans (written by the planner agent) live separately
+in `docs/plans/`.
 
 ## Issue frontmatter
 
@@ -25,7 +31,7 @@ title: Short descriptive title
 status: ready-for-agent    # or: in-progress, blocked, done
 type: afk                  # or: human-in-the-loop
 blocked_by: []             # list of issue filenames
-parent: prds/gamification.md
+parent: docs/prds/gamification.md
 ---
 ```
 
@@ -36,9 +42,9 @@ parent: prds/gamification.md
 ## Workflow
 
 1. `/idea` or `/grill` → align on the feature (product orchestrator)
-2. `/to-prd` → prd-writer writes a draft to `prds/<slug>.md`
+2. `/to-prd` → prd-writer writes a draft to `docs/prds/<slug>.md`
 3. Approve the PRD (`status: draft` → `approved`)
-4. `/to-issues prds/<slug>.md` → issue-planner writes numbered vertical slices here
+4. `/to-issues docs/prds/<slug>.md` → issue-planner writes numbered vertical slices here
 5. `/implement <issue>` (one issue, interactive) or `./scripts/adw/run.sh N`
    (unattended) → the implement orchestrator plans, builds, gates, and moves
    the issue to `done/` on completion

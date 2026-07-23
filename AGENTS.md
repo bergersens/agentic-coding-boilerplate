@@ -33,7 +33,7 @@ on demand; role-specific rules live in each agent's own prompt under
 ## The agent architecture
 
 Two primary orchestrators, each with its own team of subagents. They
-communicate through **artifacts** (`prds/`, `issues/`, plans, git commits), not
+communicate through **artifacts** (`docs/prds/`, `docs/issues/`, plans, git commits), not
 shared memory — every subagent starts with a fresh, isolated context.
 
 ```
@@ -56,9 +56,9 @@ raw idea ─/idea→ concept ─/to-prd→ PRD ─/to-issues→ issues ─/imple
 `/idea` triages first, so trivial work skips the loop:
 
 ```
-              ┌─ FIX     → /fix           (implement, tester only)
-raw idea ─/idea┼─ SLICE   → one issue → /implement
-              └─ FEATURE → grill → /to-prd → /to-issues → /implement
+              ┌─ FIX     → /fix           (a bug or small fix; implement, tester only)
+raw idea ─/idea┼─ FEATURE → issue(s) → /implement
+              └─ PRD     → grill → /to-prd → /to-issues → /implement
 ```
 
 ## Commands
@@ -68,7 +68,7 @@ raw idea ─/idea┼─ SLICE   → one issue → /implement
 | `/idea <dump>` | product | Kick off from a raw idea: triage its size, then take the right path. |
 | `/fix <desc>` | implement | Fast lane for a trivial change: no planning/review, still tested. |
 | `/grill <topic>` | product | Interview until a shared design concept exists. |
-| `/to-prd` | product | Synthesize the conversation into a draft `prds/<slug>.md`. |
+| `/to-prd` | product | Synthesize the conversation into a draft `docs/prds/<slug>.md`. |
 | `/to-issues` | product | Break a PRD into vertical-slice issues. |
 | `/implement <issue>` | implement | Build one issue through the gate loop. |
 | `/diagnose <bug>` | implement | 6-phase bug diagnosis (feedback loop first). |
