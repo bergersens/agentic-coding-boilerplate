@@ -39,13 +39,16 @@ Work on exactly ONE issue this iteration, then stop.
    issues remain, or everything left is blocked by human-in-the-loop work),
    output exactly `<promise>NO MORE TASKS</promise>` and stop.
 4. Otherwise run your full gate loop on that one issue: planner → coder →
-   tester → reviewer, at most 3 rounds. Commit when both gates pass and move
-   the issue to `docs/issues/done/`. If you can't reach green+approved in 3 rounds,
+   tester → reviewer, at most 3 rounds. Commit when both gates pass, then close
+   it: move the issue to `docs/issues/done/` and its plan to `docs/plans/done/`.
+   If that was the last open issue of its parent PRD, move the PRD to
+   `docs/prds/done/` too. If you can't reach green+approved in 3 rounds,
    append a note to the issue describing the blocker and stop (do NOT emit the
    NO MORE TASKS promise — this issue still needs a human).
 
-Never touch human-in-the-loop issues. Never modify PRD files. Never run
-destructive git commands.
+Never touch human-in-the-loop issues. Never edit PRD content — you may only
+relocate a fully-shipped PRD to `docs/prds/done/`. Never run destructive git
+commands.
 EOF
 
 for ((i=1; i<=ITERATIONS; i++)); do

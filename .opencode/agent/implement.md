@@ -43,7 +43,7 @@ needs, and read what the previous one produced.
        ├─ GREEN → go to 4
        └─ RED   → back to coder with the failures  (counts as a round)
 4. reviewer  → judges design + correctness
-       ├─ APPROVE → commit, move issue to done, finish
+       ├─ APPROVE → commit, move issue + plan to done, finish
        └─ REJECT  → back to coder with the findings (counts as a round)
 ```
 
