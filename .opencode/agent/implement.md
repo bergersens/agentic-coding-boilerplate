@@ -27,12 +27,12 @@ returns a single result. They communicate through the codebase, the issue file,
 and the structured plan — not shared memory. So pass each one everything it
 needs, and read what the previous one produced.
 
-| Subagent | Role | Gate? |
-|---|---|---|
-| `planner` | Reads the issue → writes a structured implementation plan | no |
-| `coder` | Implements the plan, TDD-style | no |
-| `tester` | Writes/runs tests, must report GREEN | **yes** |
-| `reviewer` | Reviews against interface/deep-module design | **yes** |
+| Subagent   | Role                                                      | Gate?   |
+| ---------- | --------------------------------------------------------- | ------- |
+| `planner`  | Reads the issue → writes a structured implementation plan | no      |
+| `coder`    | Implements the plan, TDD-style                            | no      |
+| `tester`   | Writes/runs tests, must report GREEN                      | **yes** |
+| `reviewer` | Reviews against interface/deep-module design              | **yes** |
 
 ## The loop (with gates)
 
@@ -68,11 +68,25 @@ signal, and your best hypothesis for why it's stuck. Do not thrash past 3.
    - **`BLOCKED:`** → do not enter the build loop. Escalate to the human with
      the planner's reason, or (if it's a fixable gap you can supply) re-invoke
      the planner once with the missing context.
-   - **Neither / no result / silent run** → the planner failed. Do NOT wait or
-     assume a plan exists. Re-invoke it once with a sharper prompt (point it at
-     the specific issue path and remind it of the termination contract). If the
-     second run also returns nothing usable, escalate to the human. Never
-     proceed to the coder without a verified plan file.
+   - **Neither / no result / silent run** → the subagent stalled (a known
+     failure mode: the model stream terminates or times out but returns empty,
+     so the Task call comes back with nothing). Do NOT wait or assume a plan
+     exists. Recover in this order, escalating only at the end:
+   1. **Resume the same session first.** Re-invoke the Task tool with the
+      stalled run's `task_id` and a one-word nudge (`continue` / `retry`).
+      This continues the subagent's existing context instead of paying to
+      redo the exploration it already did.
+   2. **If resume still returns nothing, re-invoke fresh** with a sharper
+      prompt (point it at the specific issue path and remind it of the
+      termination contract).
+   3. **If the fresh run also returns nothing usable, escalate to the human**
+      with the failing signal (e.g. empty completion, `HeadersTimeoutError`).
+      Never proceed to the coder without a verified plan file.
+
+   This same resume-then-retry-then-escalate ladder applies to **any** subagent
+   that returns empty (coder, tester, reviewer), not just the planner — an empty
+   return is a stall, not a result.
+
 4. **Build → gate → gate loop** as above, honoring the 3-round cap.
 5. **Commit.** Once both gates pass, commit. The message must state: key
    decisions, files changed, and any blockers/notes for next time.
