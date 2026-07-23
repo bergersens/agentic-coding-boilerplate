@@ -14,6 +14,13 @@
 #   npm run adw                     # same, via npm
 #   npm run adw -- 20               # pass args after --
 #
+# Debug (watch what the implement agent and its subagents actually do):
+#   ADW_DEBUG=1 ./scripts/adw/run.sh          # stream OpenCode's internal logs
+#                                             # to screen + save a per-iteration
+#                                             # log under scripts/adw/logs/
+#   ADW_LOG_LEVEL=INFO ADW_DEBUG=1 ...        # level: DEBUG|INFO|WARN|ERROR
+# Persistent OpenCode logs also live in ~/.local/state/opencode/logs/.
+#
 # Stops early when the agent emits <promise>NO MORE TASKS</promise> (all eligible
 # AFK issues done or blocked by human-in-the-loop issues).
 
@@ -61,7 +68,17 @@ for ((i=1; i<=ITERATIONS; i++)); do
   tmpfile=$(mktemp)
   trap 'rm -f "$tmpfile"' EXIT
 
-  opencode run --agent implement "$PROMPT" | tee "$tmpfile"
+  if [[ -n "${ADW_DEBUG:-}" ]]; then
+    # Stream OpenCode's internal logs (subagent tool calls, model, timings) and
+    # keep a persistent copy for post-mortem debugging.
+    mkdir -p "$REPO_ROOT/scripts/adw/logs"
+    logfile="$REPO_ROOT/scripts/adw/logs/adw-$(date +%Y%m%d-%H%M%S)-iter$i.log"
+    echo "(debug) full log for this iteration → $logfile"
+    opencode run --print-logs --log-level "${ADW_LOG_LEVEL:-DEBUG}" \
+      --agent implement "$PROMPT" 2>&1 | tee "$tmpfile" "$logfile"
+  else
+    opencode run --agent implement "$PROMPT" | tee "$tmpfile"
+  fi
 
   if grep -q "<promise>NO MORE TASKS</promise>" "$tmpfile"; then
     echo ""

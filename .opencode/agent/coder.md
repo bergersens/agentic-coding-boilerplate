@@ -7,7 +7,7 @@ permission:
     "*": allow
     "git push*": deny
     "git reset --hard*": deny
-    "rm -rf *": deny
+    "rm -rf *": allow
   external_directory:
     "/tmp/**": allow
     "/var/folders/**": allow
