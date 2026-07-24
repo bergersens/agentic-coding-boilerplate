@@ -23,13 +23,22 @@ set -eo pipefail
 TEMPLATE_URL="${1:-https://github.com/bergersens/opencode-boilerplate.git}"
 TEMPLATE_REF="${TEMPLATE_REF:-main}"
 
-# Paths owned by the template (overwritten on sync). Edit this list to taste —
-# e.g. add "AGENTS.md" if you want house rules pulled in too.
+# Paths owned by the template (overwritten on sync). Both agent layers are
+# shared: .claude/ (Claude Code) and .opencode/ (OpenCode). House rules and
+# opencode.json are listed too — comment them out if you keep those
+# project-local in a given client.
 SHARED_PATHS=(
+  ".claude/agents"
+  ".claude/commands"
+  ".claude/reference"
   ".opencode/agent"
   ".opencode/command"
   ".opencode/reference"
   "scripts/adw"
+  "scripts/misc"
+  "CLAUDE.md"
+  "AGENTS.md"
+  "opencode.json"
 )
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"

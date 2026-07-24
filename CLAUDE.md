@@ -1,9 +1,9 @@
-# AGENTS.md
+# CLAUDE.md
 
 House rules that apply **no matter which agent is running**. Keep this file
-short — task-specific knowledge lives in `.opencode/reference/` and is loaded
+short — task-specific knowledge lives in `.claude/reference/` and is loaded
 on demand; role-specific rules live in each agent's own prompt under
-`.opencode/agent/`.
+`.claude/agents/`.
 
 ## Communication
 
@@ -63,43 +63,41 @@ raw idea ─/idea┼─ FEATURE → issue(s) → /implement
 
 ## Commands
 
-| Command | Agent | Purpose |
-|---|---|---|
-| `/idea <dump>` | product | Kick off from a raw idea: triage its size, then take the right path. |
-| `/fix <desc>` | implement | Fast lane for a trivial change: no planning/review, still tested. |
-| `/grill <topic>` | product | Interview until a shared design concept exists. |
-| `/to-prd` | product | Synthesize the conversation into a draft `docs/prds/<slug>.md`. |
-| `/to-issues` | product | Break a PRD into vertical-slice issues. |
-| `/implement <issue>` | implement | Build one issue through the gate loop. |
-| `/diagnose <bug>` | implement | 6-phase bug diagnosis (feedback loop first). |
-| `/handoff` | build | Compact the session into a handoff doc. |
+| Command              | Agent     | Purpose                                                              |
+| -------------------- | --------- | -------------------------------------------------------------------- |
+| `/idea <dump>`       | product   | Kick off from a raw idea: triage its size, then take the right path. |
+| `/fix <desc>`        | implement | Fast lane for a trivial change: no planning/review, still tested.    |
+| `/grill <topic>`     | product   | Interview until a shared design concept exists.                      |
+| `/to-prd`            | product   | Synthesize the conversation into a draft `docs/prds/<slug>.md`.      |
+| `/to-issues`         | product   | Break a PRD into vertical-slice issues.                              |
+| `/implement <issue>` | implement | Build one issue through the gate loop.                               |
+| `/diagnose <bug>`    | implement | 6-phase bug diagnosis (feedback loop first).                         |
+| `/handoff`           | build     | Compact the session into a handoff doc.                              |
 
 ## Model tiering
 
-Each agent picks a model matched to its job (model, `mode`, and `permission`
-all live in `opencode.json`; the agent `.md` files hold only the description and
-prompt), so we don't pay for top-tier reasoning where mechanical work suffices:
+Each agent picks a model matched to its job via the `model:` field in its
+`.claude/agents/*.md` frontmatter (tool restrictions live there too; permission
+rules live in `.claude/settings.json`), so we don't pay for top-tier reasoning
+where mechanical work suffices:
 
-| Tier | Agents | Model |
-|---|---|---|
-| Reasoning / judgment | `product`, `implement`, `reviewer` | `jambit/claude-opus-4-8` |
-| Synthesis / structure | `planner`, `prd-writer`, `issue-planner`, `requirements` | `jambit/gpt-5.6-luna` |
-| Code generation | `coder` | `jambit/GLM-5.2` |
-| Mechanical / high-volume | `tester` | `jambit/luna:coder` (Qwen3.6 35B A3B) |
+| Tier                     | Agents                                                   | Model    |
+| ------------------------ | -------------------------------------------------------- | -------- |
+| Reasoning / judgment     | `product`, `implement`, `reviewer`                       | `opus`   |
+| Synthesis / structure    | `planner`, `prd-writer`, `issue-planner`, `requirements` | `sonnet` |
+| Code generation          | `coder`                                                  | `sonnet` |
+| Mechanical / high-volume | `tester`                                                 | `haiku`  |
 
 The pattern: an expensive **critic** (reviewer = Opus) checks a cheaper
-**generator** (coder = GLM), with the gates catching mistakes. The two quality
-gates plus the 3-round cap absorb the generator's weaker output; if it can't
-reach green+approved in 3 rounds it escalates to the human anyway.
+**generator** (coder = Sonnet), with the gates catching mistakes. The two
+quality gates plus the 3-round cap absorb the generator's weaker output; if it
+can't reach green+approved in 3 rounds it escalates to the human anyway.
 
-`coder = GLM-5.2` because reliability drives loop cost: a coder that stalls or
-times out blocks the whole loop. GLM-5.2 is the reliable sweet spot — stronger
-than the internal Qwen `luna:coder` (which was weak/slow), without Opus prices.
-If the loop rarely needs a second round, drop `coder` to `jambit/gpt-5.6-luna`
-to save; if it can't reach green+approved reliably, bump to
-`jambit/claude-opus-4-8` for "bug-free at any cost". Measure round counts with
-`ADW_DEBUG=1` before moving it. `tester` is purely mechanical (detect tooling,
-run loops, verdict), so `luna:coder` is a safe, cheap fit there.
+If the loop rarely needs a second round, `coder` can drop to `haiku` to save; if
+it can't reach green+approved reliably, bump it to `opus` for "bug-free at any
+cost". Measure round counts with `ADW_DEBUG=1` before moving it. `tester` is
+purely mechanical (detect tooling, run loops, verdict), so `haiku` is a safe,
+cheap fit there.
 
 ## Deletion rights
 
@@ -115,10 +113,10 @@ deliberate:
 
 ## Reference docs (loaded on demand)
 
-- `.opencode/reference/tdd.md` — test discipline, good vs bad tests, mocking.
-- `.opencode/reference/code-design.md` — deep modules, seams, design-it-twice.
-- `.opencode/reference/diagnosing.md` — the 6-phase bug loop.
-- `.opencode/reference/grilling.md` — how to run a grilling interview.
+- `.claude/reference/tdd.md` — test discipline, good vs bad tests, mocking.
+- `.claude/reference/code-design.md` — deep modules, seams, design-it-twice.
+- `.claude/reference/diagnosing.md` — the 6-phase bug loop.
+- `.claude/reference/grilling.md` — how to run a grilling interview.
 
 ## Always-true working rules
 
