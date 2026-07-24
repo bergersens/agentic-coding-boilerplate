@@ -10,23 +10,38 @@
 # agent's `git push` deny).
 #
 # Only files inside the shared agent layer may go up — project-specific files
-# (AGENTS.md, opencode.json, docs/) are refused, so you can't leak client
-# context into the template. Name individual files, not folders, so you upload
-# exactly the generic change and nothing project-local that happens to sit in
-# the same folder.
+# (docs/) are refused, so you can't leak client context into the template.
+# House rules and opencode.json are allowed when named explicitly (opt-in),
+# since they may carry generic improvements worth sharing back. Name
+# individual files, not folders, so you upload exactly the generic change and
+# nothing project-local that happens to sit in the same folder.
 #
 # Usage:
-#   ./scripts/misc/push-to-template.sh .opencode/command/evolve.md [more files...]
+#   ./scripts/misc/push-to-template.sh .claude/commands/evolve.md [more files...]
+#   ./scripts/misc/push-to-template.sh CLAUDE.md AGENTS.md opencode.json
 #   TEMPLATE_REF=some-branch ./scripts/misc/push-to-template.sh <file...>
-#   npm run push-to-template -- .opencode/command/evolve.md
+#   npm run push-to-template -- .claude/commands/evolve.md
 
 set -eo pipefail
 
 TEMPLATE_URL="${TEMPLATE_URL:-https://github.com/bergersens/opencode-boilerplate.git}"
 TEMPLATE_REF="${TEMPLATE_REF:-main}"
 
-# Roots the template owns. A file must live under one of these to go up.
-ALLOWED_ROOTS=(".opencode/agent" ".opencode/command" ".opencode/reference" "scripts/adw")
+# Roots the template owns. A file must live under one of these (or be one of
+# the exact root-level files listed) to go up. Both agent layers are shared:
+# .claude/ (Claude Code) and .opencode/ (OpenCode). House rules and the
+# OpenCode config are normally project-local, but can be contributed up too
+# — opt in by naming them explicitly.
+ALLOWED_ROOTS=(
+  ".claude/agents" ".claude/commands" ".claude/reference"
+  ".opencode/agent" ".opencode/command" ".opencode/reference"
+  "scripts/adw" "scripts/misc"
+)
+ALLOWED_FILES=(
+  "CLAUDE.md"
+  "AGENTS.md"
+  "opencode.json"
+)
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
@@ -43,6 +58,9 @@ for f in "$@"; do
   ok=""
   for root in "${ALLOWED_ROOTS[@]}"; do
     case "$f" in "$root"/*) ok=1;; esac
+  done
+  for af in "${ALLOWED_FILES[@]}"; do
+    [ "$f" = "$af" ] && ok=1
   done
   [ -n "$ok" ] || { echo "✗ refused (not in shared agent layer): $f" >&2; exit 1; }
   if [ -n "$(git status --porcelain -- "$f")" ]; then
@@ -64,17 +82,23 @@ CURRENT_BRANCH="$(git rev-parse --abbrev-ref HEAD)"
 PROJECT="$(basename "$REPO_ROOT")"
 CONTRIB_BRANCH="contrib/${PROJECT}-$(date +%Y%m%d-%H%M%S)"
 
-# Snapshot the named files from the current project state...
-TMP="$(mktemp -d)"; trap 'rm -rf "$TMP"' EXIT
-for f in "$@"; do mkdir -p "$TMP/$(dirname "$f")"; cp "$f" "$TMP/$f"; done
+# Build the contribution in a separate worktree off the template, so the main
+# working tree (and any dirty/untracked files in it) is never touched. The
+# contrib branch lives in the main repo's ref store; only the checkout is
+# temporary.
+WT="$(mktemp -d -t push-to-template.XXXXXX)"
+trap 'git worktree remove --force "$WT" 2>/dev/null; rm -rf "$WT"' EXIT
+git worktree add --quiet --detach "$WT" "template/$TEMPLATE_REF"
+cd "$WT"
+git checkout --quiet -b "$CONTRIB_BRANCH"
 
-# ...create a branch off the template, drop the files in, commit there.
-git checkout --quiet -b "$CONTRIB_BRANCH" "template/$TEMPLATE_REF"
-for f in "$@"; do mkdir -p "$(dirname "$f")"; cp "$TMP/$f" "$f"; git add "$f"; done
+for f in "$@"; do mkdir -p "$(dirname "$f")"; cp "$REPO_ROOT/$f" "$f"; git add "$f"; done
 
 if git diff --cached --quiet; then
   echo "Nothing to contribute — these files already match the template."
-  git checkout --quiet "$CURRENT_BRANCH"; git branch -D "$CONTRIB_BRANCH" >/dev/null 2>&1
+  cd "$REPO_ROOT"
+  git worktree remove --force "$WT" 2>/dev/null
+  git branch -D "$CONTRIB_BRANCH" >/dev/null 2>&1
   exit 0
 fi
 
@@ -82,7 +106,8 @@ git commit --quiet -m "Contribute agent-layer improvements from $PROJECT
 
 $(printf '  - %s\n' "$@")"
 
-git checkout --quiet "$CURRENT_BRANCH"
+cd "$REPO_ROOT"
+git worktree remove --force "$WT" 2>/dev/null
 
 echo ""
 echo "Prepared branch '$CONTRIB_BRANCH' with:"
