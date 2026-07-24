@@ -20,7 +20,7 @@ most recent work in this session.
 ## Reflect
 
 1. **Compare** what actually happened against the plan, the issue, `CLAUDE.md`,
-   and the relevant `.claude/reference/` docs. Where did execution diverge
+   and the relevant `.references/` docs. Where did execution diverge
    from the rules or the process?
 2. **Find the root gap**, not the symptom. A wrong result usually means a rule
    the agent never had, a reference doc that was missing or unclear, or a gap in
@@ -43,7 +43,7 @@ Map each finding to exactly one target and keep the change minimal:
 - **Global rule** (`CLAUDE.md`) — only if it applies no matter what's being
   worked on. Usually a one-liner. Keep this file short; if the rule is
   task-specific, it belongs in a reference doc instead.
-- **Reference doc** (`.claude/reference/*.md`) — task-type-specific knowledge
+- **Reference doc** (`.references/*.md`) — task-type-specific knowledge
   loaded on demand. New doc, or an edit to an existing one.
 - **Command / agent prompt** (`.claude/commands/*.md`, `.claude/agents/*.md`)
   — if the process or a gate should have caught it.
@@ -59,7 +59,7 @@ and don't lower the bar on keeping `CLAUDE.md` lean.
 ## Contribute generic changes back to the template
 
 After I've approved and you've committed a **generic** change that lives in the
-shared agent layer (`.claude/agents`, `.claude/commands`, `.claude/reference`,
+shared agent layer (`.claude/agents`, `.claude/commands`, `references`,
 `scripts/adw`), offer to send it upstream:
 
 ```

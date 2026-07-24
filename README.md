@@ -12,9 +12,9 @@ agents instead of one over-loaded assistant. It combines two ideas:
 The agent layer ships in **two parallel shapes** so you can run it on either
 engine — or both, side by side in the same repo:
 
-- **opencode** — `.opencode/agent/`, `.opencode/command/`, `.opencode/reference/`,
+- **opencode** — `.opencode/agent/`, `.opencode/command/`, `.references/`,
   house rules in `AGENTS.md`, config in `opencode.json`.
-- **Claude Code** — `.claude/agents/`, `.claude/commands/`, `.claude/reference/`,
+- **Claude Code** — `.claude/agents/`, `.claude/commands/`, `.references/`,
   house rules in `CLAUDE.md`.
 
 The two shapes are kept in lockstep (same orchestrators, same subagents, same
@@ -120,14 +120,12 @@ off; every step gives the downstream agent unambiguous instructions.
 │   ├── agent/              # the two orchestrators + their subagents (opencode shape)
 │   │   ├── product.md  requirements.md  prd-writer.md  issue-planner.md
 │   │   └── implement.md  planner.md  coder.md  tester.md  reviewer.md
-│   ├── command/            # thin slash-command entry points (opencode shape)
-│   └── reference/          # on-demand knowledge (loaded only when relevant)
-│       ├── tdd.md  code-design.md  diagnosing.md  grilling.md
-└── .claude/                # Claude Code shape — parallel to .opencode/
-    ├── agents/             # same orchestrators + subagents, Claude Code frontmatter
-    ├── commands/           # same slash commands
-    └── reference/          # same on-demand knowledge docs
-        ├── tdd.md  code-design.md  diagnosing.md  grilling.md
+│   └── command/            # thin slash-command entry points (opencode shape)
+├── .claude/                # Claude Code shape — parallel to .opencode/
+│   ├── agents/             # same orchestrators + subagents, Claude Code frontmatter
+│   └── commands/           # same slash commands
+└── .references/             # shared on-demand knowledge (loaded only when relevant)
+    ├── tdd.md  code-design.md  diagnosing.md  grilling.md
 ```
 
 The two shapes carry the same content; only the path prefix, frontmatter, and
@@ -143,10 +141,10 @@ Kept deliberately separate so the template stays maintainable:
   Stays short. One per engine.
 - **Agent prompts** (`.opencode/agent/*.md` or `.claude/agents/*.md`) — each
   agent's own role and rules.
-- **`reference/*.md`** — deep, task-specific knowledge an agent reads *on demand*
-  (an agent's prompt says "when you write tests, read `reference/tdd.md`"). This
+- **`.references/*.md`** — deep, task-specific knowledge an agent reads *on demand*
+  (an agent's prompt says "when you write tests, read `.references/tdd.md`"). This
   protects the context window: nothing heavy is loaded until it's actually
-  needed.
+  needed. Shared by both engines — one copy, referenced from both agent shapes.
 
 ## The ADW loop (AFK mode)
 
@@ -210,8 +208,8 @@ npm run update-from-template            # same, via npm
 
 This adds the boilerplate as a git remote called `template`, fetches it, and
 **overwrites only the shared paths** — both engine shapes (`.opencode/agent`,
-`.opencode/command`, `.opencode/reference`, `.claude/agents`, `.claude/commands`,
-`.claude/reference`), `scripts/adw`, `scripts/misc`, and the shared root files
+`.opencode/command`, `.claude/agents`, `.claude/commands`), the shared
+`.references/`, `scripts/adw`, `scripts/misc`, and the shared root files
 (`AGENTS.md`, `CLAUDE.md`, `opencode.json`, `README.md`). Everything
 project-specific (`docs/issues/`, `docs/prds/`, and any skills, agents, or
 commands you added yourself) is left untouched. It never commits — you review
@@ -251,13 +249,13 @@ land it yourself.
 - **New role?** Add `<engine>/agent/<name>.md` (opencode) or
   `<engine>/agents/<name>.md` (Claude Code) with `mode: subagent`, in both
   shapes, and reference it from the relevant orchestrator's prompt.
-- **New reusable knowledge?** Add `reference/<topic>.md` in both shapes and
-  point the agents that need it at the file. Don't inline it into the house
-  rules.
+- **New reusable knowledge?** Add `.references/<topic>.md` (one copy, shared by
+  both engines) and point the agents that need it at the file. Don't inline it
+  into the house rules.
 - **New workflow step?** Add a thin command in both shapes that routes to the
   right agent. If you prompt something more than twice, commandify it.
 - **System evolution.** When an agent gets something wrong, fix the *system*:
-  add a rule to the relevant agent prompt, a `reference/` doc, or a tighter
+  add a rule to the relevant agent prompt, a `.references/` doc, or a tighter
   gate — so the same mistake can't recur.
 
 ## Credit

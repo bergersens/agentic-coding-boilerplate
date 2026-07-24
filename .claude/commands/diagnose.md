@@ -1,7 +1,9 @@
 ---
 description: Structured 6-phase bug diagnosis — feedback loop first, always.
-agent: implement
 ---
+
+Delegate to the `implement` subagent (Agent tool) with the instructions below.
+Relay its diagnosis and its final evolution question back to me.
 
 Diagnose the bug below following `.references/diagnosing.md` exactly.
 Do not hypothesize until you have a tight, red-capable, deterministic,

@@ -17,7 +17,7 @@ everything the coder needs is in the plan, nothing else.
    referenced. Read `CLAUDE.md` and `CONTEXT.md` if present.
 2. **Explore the modules** the issue will touch. Identify the seam(s) where the
    work lands and the public interface(s) that change. Use
-   `.claude/reference/code-design.md` for vocabulary and deep-module
+   `.references/code-design.md` for vocabulary and deep-module
    judgment.
 3. **Write the plan** to `docs/plans/<issue-basename>.plan.md` (create the
    `docs/plans/` directory if needed). Return the plan path.

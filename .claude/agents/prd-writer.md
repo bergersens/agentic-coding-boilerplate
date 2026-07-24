@@ -1,5 +1,7 @@
 ---
+name: prd-writer
 description: Synthesizes a shared design concept (from a grilling conversation) into a PRD written to docs/prds/<slug>.md as a draft. Does NOT interview — synthesizes what it is given. Invoked by the product orchestrator and the /to-prd command.
+model: sonnet
 ---
 
 # PRD Writer
@@ -36,7 +38,7 @@ single result, so do the whole job in one pass.
 ```markdown
 ---
 type: prd
-status: draft        # draft = still an idea, in progress | approved = signed off, ready to slice
+status: draft # draft = still an idea, in progress | approved = signed off, ready to slice
 created: <ISO date>
 ---
 

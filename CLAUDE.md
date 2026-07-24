@@ -1,7 +1,7 @@
 # CLAUDE.md
 
 House rules that apply **no matter which agent is running**. Keep this file
-short — task-specific knowledge lives in `.claude/reference/` and is loaded
+short — task-specific knowledge lives in `.references/` and is loaded
 on demand; role-specific rules live in each agent's own prompt under
 `.claude/agents/`.
 
@@ -81,23 +81,27 @@ Each agent picks a model matched to its job via the `model:` field in its
 rules live in `.claude/settings.json`), so we don't pay for top-tier reasoning
 where mechanical work suffices:
 
-| Tier                     | Agents                                                   | Model    |
-| ------------------------ | -------------------------------------------------------- | -------- |
-| Reasoning / judgment     | `product`, `implement`, `reviewer`                       | `opus`   |
-| Synthesis / structure    | `planner`, `prd-writer`, `issue-planner`, `requirements` | `sonnet` |
-| Code generation          | `coder`                                                  | `sonnet` |
-| Mechanical / high-volume | `tester`                                                 | `haiku`  |
+| Tier                     | Agents                                                   | Role                              |
+| ------------------------ | -------------------------------------------------------- | --------------------------------- |
+| Reasoning / judgment     | `product`, `implement`, `reviewer`                       | design decisions, verdicts        |
+| Synthesis / structure    | `planner`, `prd-writer`, `issue-planner`, `requirements` | turning concepts into structure   |
+| Code generation          | `coder`                                                  | writing production code + its tests |
+| Mechanical / high-volume | `tester`                                                 | detect tooling, run loops, verdict |
 
-The pattern: an expensive **critic** (reviewer = Opus) checks a cheaper
-**generator** (coder = Sonnet), with the gates catching mistakes. The two
-quality gates plus the 3-round cap absorb the generator's weaker output; if it
-can't reach green+approved in 3 rounds it escalates to the human anyway.
+The pattern: an expensive **critic** (reviewer) checks a cheaper **generator**
+(coder), with the gates catching mistakes. The two quality gates plus the
+3-round cap absorb the generator's weaker output; if it can't reach
+green+approved in 3 rounds it escalates to the human anyway.
 
-If the loop rarely needs a second round, `coder` can drop to `haiku` to save; if
-it can't reach green+approved reliably, bump it to `opus` for "bug-free at any
-cost". Measure round counts with `ADW_DEBUG=1` before moving it. `tester` is
-purely mechanical (detect tooling, run loops, verdict), so `haiku` is a safe,
-cheap fit there.
+Pick concrete model IDs per tier to match whatever models you have available —
+the tiers are stable, the model IDs are not. Reliability drives loop cost: a
+coder that stalls or times out blocks the whole loop, so favor a reliable
+mid-tier coder over the strongest available one. If the loop rarely needs a
+second round, drop the coder tier down to save; if it can't reach
+green+approved reliably, bump the critic tier up for "bug-free at any cost".
+Measure round counts with `ADW_DEBUG=1` before moving either. `tester` is
+purely mechanical (detect tooling, run loops, verdict), so the cheapest
+reliable tier is the right fit there.
 
 ## Deletion rights
 
@@ -113,10 +117,10 @@ deliberate:
 
 ## Reference docs (loaded on demand)
 
-- `.claude/reference/tdd.md` — test discipline, good vs bad tests, mocking.
-- `.claude/reference/code-design.md` — deep modules, seams, design-it-twice.
-- `.claude/reference/diagnosing.md` — the 6-phase bug loop.
-- `.claude/reference/grilling.md` — how to run a grilling interview.
+- `.references/tdd.md` — test discipline, good vs bad tests, mocking.
+- `.references/code-design.md` — deep modules, seams, design-it-twice.
+- `.references/diagnosing.md` — the 6-phase bug loop.
+- `.references/grilling.md` — how to run a grilling interview.
 
 ## Always-true working rules
 

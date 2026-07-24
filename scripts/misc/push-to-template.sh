@@ -33,8 +33,9 @@ TEMPLATE_REF="${TEMPLATE_REF:-main}"
 # OpenCode config are normally project-local, but can be contributed up too
 # — opt in by naming them explicitly.
 ALLOWED_ROOTS=(
-  ".claude/agents" ".claude/commands" ".claude/reference"
-  ".opencode/agent" ".opencode/command" ".opencode/reference"
+  ".claude/agents" ".claude/commands"
+  ".opencode/agent" ".opencode/command"
+  ".references"
   "scripts/adw" "scripts/misc"
 )
 ALLOWED_FILES=(

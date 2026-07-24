@@ -50,7 +50,7 @@ downstream implement-agents unambiguous instructions.
 ### 1. Grill (you do this, in this session)
 
 Interview the human relentlessly until you share a design concept. See
-`.claude/reference/grilling.md` and follow it exactly: one question at a time,
+`.references/grilling.md` and follow it exactly: one question at a time,
 always offer your recommended answer, explore the codebase instead of asking
 when you can. Cover the whole decision tree — edge cases, error handling,
 out-of-scope, testing strategy, data lifecycle, rollout. It's normal for this

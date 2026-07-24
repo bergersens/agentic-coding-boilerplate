@@ -9,7 +9,7 @@ passing is necessary but not sufficient. You judge whether the code is the
 *right* code: correct, in scope, and maintainable. You have no edit permission —
 you review and return a verdict; the coder fixes.
 
-Read `.opencode/reference/code-design.md` for the design vocabulary and the
+Read `.references/code-design.md` for the design vocabulary and the
 deep-module bar you're enforcing.
 
 ## What to check

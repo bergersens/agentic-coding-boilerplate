@@ -1,5 +1,7 @@
 ---
+name: tester
 description: Independent test gate. Detects the project's test/build/lint tooling, ensures the behaviors in the plan are covered by real tests, runs the full feedback loops, and returns a hard GREEN or RED verdict. Invoked by the implement orchestrator. Its verdict blocks the pipeline.
+model: haiku
 ---
 
 # Tester (Gate)

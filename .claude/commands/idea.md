@@ -1,7 +1,12 @@
 ---
 description: Dump a raw, unstructured idea. Structures it, surfaces the biggest gaps, then rolls straight into grilling.
-agent: product
 ---
+
+Triage and grilling both need back-and-forth with me, which a one-shot Task
+call can't do — delegate each step to the `product` subagent (Agent tool),
+relay its output/questions to me, feed my reply into the next call, and repeat.
+Where the steps below say "delegate to X subagent", that's a separate,
+single-purpose Agent tool call (it returns once, no follow-up questions).
 
 I'm dumping a raw idea on you. It may be messy, incomplete, or half-baked —
 that's fine. First **triage** it, then take the right path. Don't run the full
@@ -18,11 +23,10 @@ re-tier.
   (button color, typo, copy change, a one-liner, an obvious bug). No PRD, no
   grilling.
   → Tell me to run `/fix <description>` (a fresh, cheap implement run that
-  skips planning/review but still tests). Don't try to fix it yourself — you're
-  the product agent and can't write code.
+  skips planning/review but still tests). Don't try to fix it yourself here.
 
 - **FEATURE** — one clearly-understood feature, low ambiguity, no multi-question
-  alignment needed. It may still become one *or a few* vertical slices — a
+  alignment needed. It may still become one _or a few_ vertical slices — a
   feature is not automatically a single issue.
   → Ask me the 1–3 questions that actually matter, then delegate to the
   `issue-planner` subagent to write the issue(s) in `docs/issues/`, and tell me
@@ -30,7 +34,7 @@ re-tier.
 
 - **PRD** — multiple features, OR a single feature that's ambiguous or
   multi-layered enough to need real alignment. One PRD, later sliced into many
-  issues. Route here whenever the *what and why* isn't settled — that's what the
+  issues. Route here whenever the _what and why_ isn't settled — that's what the
   grilling protects against.
   → Go to Step 2 (full loop).
 
