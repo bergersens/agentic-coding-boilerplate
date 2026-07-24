@@ -41,6 +41,7 @@ ALLOWED_FILES=(
   "CLAUDE.md"
   "AGENTS.md"
   "opencode.json"
+  "README.md"
 )
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
