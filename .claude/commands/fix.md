@@ -1,12 +1,12 @@
 ---
-description: Fast lane for a trivial, well-understood change. No coder, no planner — the change is made directly, the verifier still gates it.
+description: Fast lane for a trivial, well-understood change. No coder — the change is made directly, the verifier still gates it.
 ---
 
 Delegate to the `implement` subagent (Agent tool) with the instructions below.
 Relay what changed and the gate's verdict back to me.
 
 Run in **FIX mode** (see your agent prompt). This is a small, self-contained
-change with no design decisions — don't spin up the `coder` or the `planner`.
+change with no design decisions — don't spin up the `coder`.
 
 1. Make the change directly, yourself.
 2. Run the `verifier` subagent as the gate, and tell it the change class so it

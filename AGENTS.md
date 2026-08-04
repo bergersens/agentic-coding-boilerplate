@@ -40,8 +40,10 @@ shared memory — every subagent starts with a fresh, isolated context.
 PLANNING (talk to `product`)              BUILDING (talk to `implement`)
   product                                   implement
    ├─ requirements  (analysis)               ├─ coder
-   ├─ prd-writer    (PRD)                    ├─ verifier  ← THE GATE
-   └─ issue-planner (tickets)                 └─ planner   (escalation only)
+   ├─ prd-writer    (PRD)                    └─ verifier  ← THE GATE
+   └─ issue-planner (tickets)
+
+  planner — human-invoked via /plan only; neither orchestrator calls it
 ```
 
 ```
@@ -72,8 +74,9 @@ Three deliberate consequences, and the reasons they must not be undone:
   records the `## Seams` and `## Behaviors` it found. Re-deriving that in a
   separate planning step means paying for the same exploration three times (once
   in the planner, again in the coder, which starts cold regardless). The
-  `planner` survives only as an escalation for issues that aren't buildable as
-  written — gated on `needs_plan: true` or the criteria in the implement prompt.
+  build loop therefore has **no planning step at all** — the `planner` agent is
+  human-invoked via `/plan` when you want the approach reviewable before code,
+  and the orchestrator never calls it.
 - **One gate, not two.** A test gate and a review gate re-read the same diff and
   both judge test quality. Merging them into `verifier` removes a cold start, and
   it delivers `[red]`, `[coverage]` and `[design]` findings in a *single* verdict
@@ -101,6 +104,7 @@ overhead: it's a constant.
 | `/to-prd` | product | Synthesize the conversation into a draft `docs/prds/<slug>.md`. |
 | `/to-issues` | product | Break a PRD into vertical-slice issues. |
 | `/implement <issue>` | implement | Build one issue through the gate loop. |
+| `/plan <issue>` | implement | Optional: a reviewable plan before code. Not part of the loop. |
 | `/diagnose <bug>` | implement | 6-phase bug diagnosis (feedback loop first). |
 | `/handoff` | build | Compact the session into a handoff doc. |
 

@@ -35,8 +35,10 @@ coherent.
 PLANNING (talk to `product`)              BUILDING (talk to `implement`)
   product                                   implement
    ├─ requirements  (analysis)               ├─ coder
-   ├─ prd-writer    (PRD)                    ├─ verifier  ← THE GATE
-   └─ issue-planner (tickets)                 └─ planner   (escalation only)
+   ├─ prd-writer    (PRD)                    └─ verifier  ← THE GATE
+   └─ issue-planner (tickets)
+
+  planner — human-invoked via /plan only; neither orchestrator calls it
 ```
 
 You talk to a **primary orchestrator**; it delegates to its **subagents** via
@@ -59,8 +61,8 @@ coder  →  verifier  ─── PASS ──▶ commit + close
 - **The issue is the plan.** `issue-planner` explores the codebase anyway, so it
   writes down the `## Seams` and `## Behaviors` it finds. A separate planning step
   would pay for that same exploration a second and third time (the coder starts
-  cold regardless). `planner` remains for issues that genuinely aren't buildable
-  as written — flagged with `needs_plan: true`.
+  cold regardless). The loop has **no planning step at all**; the `planner` agent
+  is human-invoked via `/plan` when you want the approach reviewable before code.
 - **One gate, not two.** A test gate and a review gate re-read the same diff and
   both judge test quality. Merged, they cost one cold start and return every
   defect class in a single verdict — so the coder fixes tests *and* design in one
@@ -117,6 +119,7 @@ off; every step gives the downstream agent unambiguous instructions.
 | `/to-prd` | product | Turns the conversation into a draft `docs/prds/<slug>.md`. |
 | `/to-issues` | product | Breaks a PRD into `docs/issues/NN-<slug>.md` vertical slices. |
 | `/implement <issue>` | implement | Builds one issue through coder→verifier. |
+| `/plan <issue>` | implement | Optional: a reviewable plan before code. Not part of the loop. |
 | `/diagnose <bug>` | implement | 6-phase structured bug diagnosis (feedback loop first). |
 | `/handoff` | build | Compacts the session into a handoff doc for a fresh agent. |
 
@@ -146,7 +149,8 @@ off; every step gives the downstream agent unambiguous instructions.
 ├── .opencode/
 │   ├── agent/              # the two orchestrators + their subagents (opencode shape)
 │   │   ├── product.md  requirements.md  prd-writer.md  issue-planner.md
-│   │   └── implement.md  coder.md  verifier.md  planner.md
+│   │   ├── implement.md  coder.md  verifier.md
+│   │   └── planner.md      # human-invoked via /plan, outside the loop
 │   └── command/            # thin slash-command entry points (opencode shape)
 ├── .claude/                # Claude Code shape — parallel to .opencode/
 │   ├── agents/             # same orchestrators + subagents, Claude Code frontmatter

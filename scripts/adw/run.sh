@@ -82,8 +82,9 @@ Work on exactly ONE issue this iteration, then stop.
    human-in-the-loop work), output exactly `<promise>NO MORE TASKS</promise>`
    and stop — do nothing else.
 4. Otherwise run your gate loop on that ONE issue: `coder` → `verifier`, at most
-   2 rounds. Skip the `planner` unless the issue genuinely isn't buildable as
-   written (see the escalation criteria in your prompt). Commit when the gate
+   2 rounds. There is no planning step — never invoke the `planner` (it is
+   human-invoked via `/plan` only). If the coder returns BLOCKED, the ticket is
+   wrong: append its reason to the issue and stop. Commit when the gate
    returns PASS, then close it with
    `./scripts/adw/close-issue.sh docs/issues/<file>` — that script handles the
    issue, its plan, and the parent PRD. If you can't reach PASS in 2 rounds,

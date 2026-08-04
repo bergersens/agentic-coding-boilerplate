@@ -37,7 +37,6 @@ title: Short descriptive title
 status: ready-for-agent # or: in-progress, blocked, done
 type: afk # or: human-in-the-loop
 blocked_by: [] # list of issue filenames
-needs_plan: false # true → implement escalates to the planner first
 parent: docs/prds/gamification.md
 ---
 ```
@@ -45,8 +44,6 @@ parent: docs/prds/gamification.md
 - `type: afk` — the `implement` orchestrator / ADW loop may pick this up unattended.
 - `type: human-in-the-loop` — needs UX judgement, design decisions, or manual QA. The ADW loop skips it.
 - `blocked_by: []` — work only starts on issues whose blockers are already in `done/`.
-- `needs_plan:` — `true` only when the issue-planner couldn't name the seam. It
-  buys an extra `planner` cold start, so it should be rare.
 - `parent:` — required for PRD-derived issues; `close-issue.sh` uses it to retire
   the PRD once the last slice ships.
 
@@ -59,8 +56,10 @@ Beyond `## What to build` and `## Acceptance criteria`, a well-formed issue carr
   for the coder.
 - `## Out of scope` — what this slice must not touch.
 
-If those are missing, the `implement` orchestrator has to spend a planning round to
-reconstruct them.
+If those are missing the `coder` derives them from the acceptance criteria — but if
+the criteria don't map onto observable behaviors either, it returns `BLOCKED` and
+the ticket comes back for re-slicing. There is no planning step to absorb a vague
+ticket.
 
 ## Workflow
 
