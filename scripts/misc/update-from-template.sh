@@ -14,9 +14,11 @@
 # Because `git checkout` only ever writes, it cannot remove a file the template
 # DELETED (e.g. when two agents are merged into one). Those linger locally as
 # orphans — still registered with the engine, no longer called by any
-# orchestrator. The sync reports them at the end; re-run with PRUNE=1 to delete
-# them. Pruning is opt-in on purpose: the script can't tell a retired template
-# file from an agent you wrote yourself.
+# orchestrator. The sync lists them at the end together with a ready-to-edit
+# `git rm` line, because it CANNOT tell a retired template file from an agent
+# this project wrote itself: both are simply "in a shared folder, not upstream".
+# PRUNE=1 deletes the whole list unreviewed — only use it when you know the
+# project added nothing of its own to those folders.
 #
 # Usage:
 #   ./scripts/misc/update-from-template.sh            # sync from the default template
@@ -96,18 +98,23 @@ done
 if [ "${#ORPHANS[@]}" -gt 0 ]; then
   echo ""
   if [ -n "${PRUNE:-}" ]; then
-    echo "Pruning files no longer in the template:"
+    echo "PRUNE=1 — deleting every file listed below. This does NOT spare agents or"
+    echo "commands you wrote yourself; they look identical to a retired template file."
     for f in "${ORPHANS[@]}"; do
       git rm --quiet "$f"
       echo "  ✗ $f"
     done
   else
-    echo "⚠  In a shared folder but NOT in the template (retired upstream, or yours):"
-    for f in "${ORPHANS[@]}"; do echo "     $f"; done
-    echo "   A retired agent left in place stays registered with the engine even"
-    echo "   though no orchestrator calls it. Delete them with:"
+    echo "⚠  In a shared folder but NOT in the template — either retired upstream, or"
+    echo "   written by this project. The script cannot tell which, so it deletes"
+    echo "   nothing. A retired agent left in place stays registered with the engine"
+    echo "   even though no orchestrator calls it."
     echo ""
-    echo "       PRUNE=1 $0"
+    for f in "${ORPHANS[@]}"; do echo "     $f"; done
+    echo ""
+    echo "   Drop the ones you want to keep from this line, then run it:"
+    echo ""
+    echo "       git rm ${ORPHANS[*]}"
   fi
 fi
 
