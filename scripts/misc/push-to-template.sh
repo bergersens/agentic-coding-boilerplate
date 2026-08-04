@@ -42,6 +42,7 @@ ALLOWED_FILES=(
   "CLAUDE.md"
   "AGENTS.md"
   "opencode.json"
+  ".claude/settings.json"
   "README.md"
 )
 
