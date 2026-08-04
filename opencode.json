@@ -37,7 +37,7 @@
         }
       }
     },
-    "reviewer": {
+    "verifier": {
       "model": "ollama-cloud/glm-5.2",
       "mode": "subagent",
       "permission": {
@@ -120,23 +120,6 @@
     },
     "coder": {
       "model": "kimi-for-coding/kimi-for-coding-highspeed",
-      "mode": "subagent",
-      "permission": {
-        "edit": "allow",
-        "bash": {
-          "*": "allow",
-          "git push*": "deny",
-          "git reset --hard*": "deny",
-          "rm -rf *": "allow"
-        },
-        "external_directory": {
-          "/tmp/**": "allow",
-          "/var/folders/**": "allow"
-        }
-      }
-    },
-    "tester": {
-      "model": "ollama-cloud/nemotron-3-nano:30b",
       "mode": "subagent",
       "permission": {
         "edit": "allow",

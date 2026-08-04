@@ -1,8 +1,8 @@
 #!/bin/bash
 # ADW (AI Developer Workflow): deterministic code orchestrating a non-deterministic
 # agent. Each iteration hands ONE issue to the `implement` orchestrator, which
-# runs its own planner → coder → tester(gate) → reviewer(gate) loop (max 3
-# rounds) in a fresh, isolated context.
+# runs its own coder → verifier(gate) loop (max 2 rounds) in a fresh, isolated
+# context.
 #
 # This is the "loop over an agent" pattern. The determinism lives here (issue
 # selection, iteration cap, stop condition); the intelligence lives in the
@@ -81,11 +81,12 @@ Work on exactly ONE issue this iteration, then stop.
    or only human-in-the-loop issues remain, or everything left is blocked by
    human-in-the-loop work), output exactly `<promise>NO MORE TASKS</promise>`
    and stop — do nothing else.
-4. Otherwise run your full gate loop on that ONE issue: planner → coder →
-   tester → reviewer, at most 3 rounds. Commit when both gates pass, then close
-   it: move the issue to `docs/issues/done/` and its plan to `docs/plans/done/`.
-   If that was the last open issue of its parent PRD, move the PRD to
-   `docs/prds/done/` too. If you can't reach green+approved in 3 rounds,
+4. Otherwise run your gate loop on that ONE issue: `coder` → `verifier`, at most
+   2 rounds. Skip the `planner` unless the issue genuinely isn't buildable as
+   written (see the escalation criteria in your prompt). Commit when the gate
+   returns PASS, then close it with
+   `./scripts/adw/close-issue.sh docs/issues/<file>` — that script handles the
+   issue, its plan, and the parent PRD. If you can't reach PASS in 2 rounds,
    append a note to the issue describing the blocker and stop (do NOT emit the
    NO MORE TASKS promise — this issue still needs a human).
 

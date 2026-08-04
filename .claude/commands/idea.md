@@ -23,7 +23,7 @@ re-tier.
   (button color, typo, copy change, a one-liner, an obvious bug). No PRD, no
   grilling.
   → Tell me to run `/fix <description>` (a fresh, cheap implement run that
-  skips planning/review but still tests). Don't try to fix it yourself here.
+  makes the change directly but still runs the gate). Don't fix it yourself here.
 
 - **FEATURE** — one clearly-understood feature, low ambiguity, no multi-question
   alignment needed. It may still become one _or a few_ vertical slices — a

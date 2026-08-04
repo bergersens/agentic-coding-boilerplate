@@ -1,7 +1,10 @@
 ---
 description: Implement one ready-to-build issue through the coder→verifier gate loop.
-agent: implement
 ---
+
+Delegate to the `implement` subagent (Agent tool) with the instructions below.
+Relay its result — the commit, the closed issue, or the escalation report — back
+to me.
 
 Implement a single issue end-to-end, honoring the 2-round gate cap.
 
@@ -13,6 +16,6 @@ actually isn't buildable as written — see the escalation criteria in your prom
 
 Commit when the gate passes, then close it with
 `./scripts/adw/close-issue.sh docs/issues/<file>`. If you can't get a PASS
-within 2 rounds, stop and report back to me with the findings verbatim.
+within 2 rounds, stop and report back with the findings verbatim.
 
 Issue: $ARGUMENTS

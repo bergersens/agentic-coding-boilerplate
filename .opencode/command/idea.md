@@ -18,7 +18,7 @@ re-tier.
   (button color, typo, copy change, a one-liner, an obvious bug). No PRD, no
   grilling.
   → Tell me to run `/fix <description>` (a fresh, cheap implement run that
-  skips planning/review but still tests). Don't try to fix it yourself — you're
+  makes the change directly but still runs the gate). Don't fix it yourself — you're
   the product agent and can't write code.
 
 - **FEATURE** — one clearly-understood feature, low ambiguity, no multi-question

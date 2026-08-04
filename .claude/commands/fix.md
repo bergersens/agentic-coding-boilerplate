@@ -1,7 +1,9 @@
 ---
-description: Fast lane for a trivial, well-understood change. No coder, no planner — you change it yourself, the verifier still gates it.
-agent: implement
+description: Fast lane for a trivial, well-understood change. No coder, no planner — the change is made directly, the verifier still gates it.
 ---
+
+Delegate to the `implement` subagent (Agent tool) with the instructions below.
+Relay what changed and the gate's verdict back to me.
 
 Run in **FIX mode** (see your agent prompt). This is a small, self-contained
 change with no design decisions — don't spin up the `coder` or the `planner`.
@@ -17,8 +19,8 @@ change with no design decisions — don't spin up the `coder` or the `planner`.
 4. Commit with a message stating what changed and why.
 
 If while working you discover this isn't actually trivial (hidden design
-decisions, touches multiple layers, unclear scope), **stop and tell me** — it
-should go through `/idea` or `/grill` instead. Don't quietly turn a fix into a
+decisions, touches multiple layers, unclear scope), **stop and report back** —
+it should go through `/idea` or `/grill` instead. Don't quietly turn a fix into a
 feature.
 
 The change: $ARGUMENTS

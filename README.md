@@ -34,24 +34,49 @@ coherent.
 ```
 PLANNING (talk to `product`)              BUILDING (talk to `implement`)
   product                                   implement
-   ├─ requirements  (analysis)               ├─ planner
-   ├─ prd-writer    (PRD)                     ├─ coder
-   └─ issue-planner (tickets)                 ├─ tester    ← GATE
-                                              └─ reviewer  ← GATE
+   ├─ requirements  (analysis)               ├─ coder
+   ├─ prd-writer    (PRD)                    ├─ verifier  ← THE GATE
+   └─ issue-planner (tickets)                 └─ planner   (escalation only)
 ```
 
 You talk to a **primary orchestrator**; it delegates to its **subagents** via
-the Task tool. The build loop is gated: `implement` cannot advance past a red
-`tester` or a rejecting `reviewer`, and it loops at most **3 times** before
-escalating to you with a report. That's how "bug-free" is enforced by
-structure, not hope.
+the Task tool. The build loop is gated: `implement` cannot commit past a failing
+`verifier`, and it loops at most **2 times** before escalating to you with a
+report. That's how "bug-free" is enforced by structure, not hope.
+
+### The build loop is deliberately short
+
+Every subagent starts cold and pays to rebuild context. That rebuild — not the
+thinking — is what makes a feature slow, so the loop is **two cold starts per
+issue**:
+
+```
+coder  →  verifier  ─── PASS ──▶ commit + close
+   ▲          │
+   └─ FAIL ───┘   all findings at once — [red] + [coverage] + [design]
+```
+
+- **The issue is the plan.** `issue-planner` explores the codebase anyway, so it
+  writes down the `## Seams` and `## Behaviors` it finds. A separate planning step
+  would pay for that same exploration a second and third time (the coder starts
+  cold regardless). `planner` remains for issues that genuinely aren't buildable
+  as written — flagged with `needs_plan: true`.
+- **One gate, not two.** A test gate and a review gate re-read the same diff and
+  both judge test quality. Merged, they cost one cold start and return every
+  defect class in a single verdict — so the coder fixes tests *and* design in one
+  round instead of discovering the design problem a full cycle later.
+- **The suite runs once per round.** The coder's inner loop is narrow (touched
+  tests + typecheck); the verifier runs the full suite.
+
+The result, per issue: 2 cold starts on the happy path instead of 4, and 5 in the
+worst case instead of 10.
 
 ## The workflow
 
 `/idea` triages every idea into one of three tiers, so small work stays small:
 
 ```
-              ┌─ FIX     → /fix            a bug or a small fix, tested, no loop
+              ┌─ FIX     → /fix            a bug or a small fix; no coder, gate still runs
 /idea <dump> ─┼─ FEATURE → issue(s)      → /implement
               └─ PRD     → grill → PRD → issues → /implement
 ```
@@ -87,11 +112,11 @@ off; every step gives the downstream agent unambiguous instructions.
 | Command | Agent | What it does |
 |---|---|---|
 | `/idea <dump>` | product | Dump a raw idea; it's triaged into FIX / FEATURE / PRD and routed. |
-| `/fix <desc>` | implement | Fast lane for a trivial change — skips planning/review, still tested. |
+| `/fix <desc>` | implement | Fast lane for a trivial change — no coder, the gate still runs. |
 | `/grill <topic>` | product | Interviews you until the design concept is aligned. |
 | `/to-prd` | product | Turns the conversation into a draft `docs/prds/<slug>.md`. |
 | `/to-issues` | product | Breaks a PRD into `docs/issues/NN-<slug>.md` vertical slices. |
-| `/implement <issue>` | implement | Builds one issue through planner→coder→tester→reviewer. |
+| `/implement <issue>` | implement | Builds one issue through coder→verifier. |
 | `/diagnose <bug>` | implement | 6-phase structured bug diagnosis (feedback loop first). |
 | `/handoff` | build | Compacts the session into a handoff doc for a fresh agent. |
 
@@ -105,12 +130,14 @@ off; every step gives the downstream agent unambiguous instructions.
 ├── package.json            # empty scaffold — add your stack
 ├── docs/                   # planning artifacts
 │   ├── prds/               # PRD documents (draft → approved lifecycle)
-│   ├── issues/             # work tickets + shared agent memory
+│   ├── issues/             # work tickets — seams + behaviors included, so they ARE the plan
 │   │   └── done/           # completed issues
-│   └── plans/              # structured implementation plans (planner output)
+│   ├── plans/              # escalation plans only (most issues never get one)
+│   └── loops.md            # this project's feedback-loop commands, detected once
 ├── scripts/
 │   ├── adw/
 │   │   ├── run.sh                       # the ADW loop: deterministic code over the implement agent
+│   │   ├── close-issue.sh               # deterministic issue/plan/PRD retirement
 │   │   ├── format-stream-claude.js      # live, colorized rendering of Claude stream-json events
 │   │   └── format-stream-opencode.js    # live, colorized rendering of opencode --format json events
 │   └── misc/
@@ -119,11 +146,12 @@ off; every step gives the downstream agent unambiguous instructions.
 ├── .opencode/
 │   ├── agent/              # the two orchestrators + their subagents (opencode shape)
 │   │   ├── product.md  requirements.md  prd-writer.md  issue-planner.md
-│   │   └── implement.md  planner.md  coder.md  tester.md  reviewer.md
+│   │   └── implement.md  coder.md  verifier.md  planner.md
 │   └── command/            # thin slash-command entry points (opencode shape)
 ├── .claude/                # Claude Code shape — parallel to .opencode/
 │   ├── agents/             # same orchestrators + subagents, Claude Code frontmatter
-│   └── commands/           # same slash commands
+│   ├── commands/           # same slash commands
+│   └── settings.json       # Claude Code permissions (allow/deny for AFK runs)
 └── .references/             # shared on-demand knowledge (loaded only when relevant)
     ├── tdd.md  code-design.md  diagnosing.md  grilling.md
 ```
@@ -208,12 +236,12 @@ npm run update-from-template            # same, via npm
 
 This adds the boilerplate as a git remote called `template`, fetches it, and
 **overwrites only the shared paths** — both engine shapes (`.opencode/agent`,
-`.opencode/command`, `.claude/agents`, `.claude/commands`), the shared
-`.references/`, `scripts/adw`, `scripts/misc`, and the shared root files
-(`AGENTS.md`, `CLAUDE.md`, `opencode.json`, `README.md`). Everything
-project-specific (`docs/issues/`, `docs/prds/`, and any skills, agents, or
-commands you added yourself) is left untouched. It never commits — you review
-the diff and commit yourself.
+`.opencode/command`, `.claude/agents`, `.claude/commands`,
+`.claude/settings.json`), the shared `.references/`, `scripts/adw`,
+`scripts/misc`, and the shared root files (`AGENTS.md`, `CLAUDE.md`,
+`opencode.json`, `README.md`). Everything project-specific (`docs/issues/`,
+`docs/prds/`, and any skills, agents, or commands you added yourself) is left
+untouched. It never commits — you review the diff and commit yourself.
 
 - Runs only when you invoke it (manual, never automatic).
 - Requires a clean working tree so the template's changes are easy to review.
@@ -221,6 +249,18 @@ the diff and commit yourself.
   drop `opencode.json` if you keep that project-local in a given client).
 - Point it at a different template with `./scripts/misc/update-from-template.sh <url>`
   (or `npm run update-from-template -- <url>`).
+
+**Retired files.** `git checkout` only ever writes, so it cannot delete a file the
+template removed — when two agents are merged into one, the old prompts linger
+locally as orphans that are still registered with the engine but never called.
+The sync lists them at the end; delete them with:
+
+```
+PRUNE=1 ./scripts/misc/update-from-template.sh
+```
+
+Pruning is opt-in because the script can't tell a retired template file from an
+agent you wrote yourself — read the list before you run it.
 
 ### Contributing improvements back up
 

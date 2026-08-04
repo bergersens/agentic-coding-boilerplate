@@ -15,7 +15,9 @@ docs/prds/
 ```
 
 A PRD moves into `done/` once every issue it was sliced into sits in
-`docs/issues/done/`.
+`docs/issues/done/`. `./scripts/adw/close-issue.sh` checks this on every close and
+retires the PRD automatically — which only works if each issue carries
+`parent: docs/prds/<slug>.md` in its frontmatter.
 
 ## Lifecycle
 
